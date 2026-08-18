@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" fill="#000000">
+  <!-- Classy-rounded pattern (matches red classy-rounded QR style with fluid organic droplet shapes) -->
+  <!-- Top wave / droplet bar -->
+  <path d="M10,4 L30,4 C33.5,4 36,6.5 36,10 C36,12.5 33.5,12 30,12 L10,12 C6.5,12 4,11 4,8 C4,5.5 6.5,4 10,4 Z" />
+  
+  <!-- Left flowing vertical shape -->
+  <path d="M4,12 C4,12 12,11 12,16 L12,26 C12,29.5 9.5,32 6,32 C4.5,32 4,30.5 4,28 Z" />
+  
+  <!-- Right organic connected shape -->
+  <path d="M30,16 C34,16 44,16 44,20 C44,23 40,24 36,24 L28,24 C28,20.5 28,16 30,16 Z" />
+  
+  <!-- Center organic droplet bridge -->
+  <path d="M18,24 L28,24 C31,24 32,26 32,28 C32,31 29,32 26,32 L16,32 C16,28 16,24 18,24 Z" />
+  
+  <!-- Organic petal/droplet single dots -->
+  <path d="M8,36 C11,36 12,38 12,40 C12,43 9,44 6,44 C4,44 4,42 4,40 C4,37 6,36 8,36 Z" />
+  <path d="M20,36 C23,36 24,38 24,40 C24,43 21,44 18,44 C16,44 16,42 16,40 C16,37 18,36 20,36 Z" />
+  <path d="M40,36 C43,36 44,38 44,40 C44,43 41,44 38,44 C36,44 36,42 36,40 C36,37 38,36 40,36 Z" />
+</svg>

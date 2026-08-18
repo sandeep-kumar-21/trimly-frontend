@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-inter), var(--font-roboto), system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: var(--font-inter), sans-serif;
+  --font-body: var(--font-roboto), var(--font-inter), sans-serif;
+}
+
+@layer base {
+  :root, body {
+    font-family: var(--font-inter), var(--font-roboto), system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    @apply antialiased bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100;
+  }
+
+  button, input, select, textarea {
+    font-family: var(--font-inter), var(--font-roboto), system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-inter), sans-serif;
+  }
+}
+
+.font-heading {
+  font-family: var(--font-inter), sans-serif;
+}
+
+.font-body {
+  font-family: var(--font-roboto), var(--font-inter), sans-serif;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}

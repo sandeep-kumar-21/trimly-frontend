@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" fill="#000000">
+  <!-- Classy pattern (matches blue classy QR style with connected classy shapes) -->
+  <!-- Top horizontal connected bar with classy corner curves -->
+  <path d="M8,4 L32,4 A4,4 0 0,1 36,8 L36,12 L4,12 L4,8 A4,4 0 0,1 8,4 Z" />
+  
+  <!-- Left vertical connected bar -->
+  <path d="M4,12 L12,12 L12,28 A4,4 0 0,1 8,32 L8,32 A4,4 0 0,1 4,28 Z" />
+  
+  <!-- Right horizontal connected block -->
+  <path d="M32,16 L40,16 A4,4 0 0,1 44,20 L44,20 A4,4 0 0,1 40,24 L28,24 L28,20 A4,4 0 0,1 32,16 Z" />
+  
+  <!-- Center connected block -->
+  <path d="M20,24 L32,24 L32,28 A4,4 0 0,1 28,32 L16,32 L16,28 A4,4 0 0,1 20,24 Z" />
+  
+  <!-- Single isolated classy dots (top-left & bottom-right curved) -->
+  <path d="M8,36 L12,36 L12,40 A4,4 0 0,1 8,44 L4,44 L4,40 A4,4 0 0,1 8,36 Z" />
+  <path d="M20,36 L24,36 L24,40 A4,4 0 0,1 20,44 L16,44 L16,40 A4,4 0 0,1 20,36 Z" />
+  <path d="M40,36 L44,36 L44,40 A4,4 0 0,1 40,44 L36,44 L36,40 A4,4 0 0,1 40,36 Z" />
+</svg>

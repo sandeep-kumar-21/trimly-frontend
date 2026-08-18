@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" fill="#000000">
+  <!-- Rounded pattern: connected blocks with subtle rounded corners -->
+  <rect x="4" y="4" width="32" height="8" rx="2" />
+  <rect x="4" y="16" width="8" height="16" rx="2" />
+  <rect x="28" y="16" width="16" height="8" rx="2" />
+  <rect x="16" y="24" width="16" height="8" rx="2" />
+  <rect x="4" y="36" width="8" height="8" rx="2" />
+  <rect x="16" y="36" width="8" height="8" rx="2" />
+  <rect x="36" y="36" width="8" height="8" rx="2" />
+</svg>

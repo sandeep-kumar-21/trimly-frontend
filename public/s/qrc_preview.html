@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Code Preview — Trimly</title>
+  <link rel="icon" href="/trimly-logo-only.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: #f4f6f8;
+      color: #273144;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .page {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    .header {
+      width: 100%;
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+    }
+
+    .logo-container {
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+    }
+
+    .logo-container a {
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .logo {
+      height: 36px;
+      width: auto;
+      object-contain: contain;
+    }
+
+    .content {
+      flex: 1;
+      max-width: 760px;
+      width: 100%;
+      margin: 40px auto 60px;
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .message-container {
+      margin-bottom: 32px;
+      width: 100%;
+    }
+
+    .title-container {
+      margin-bottom: 16px;
+    }
+
+    .message-title {
+      font-size: 28px;
+      font-weight: 800;
+      color: #0b1528;
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+    }
+
+    .message-title.mobile {
+      display: none;
+    }
+
+    .extra-bold {
+      font-weight: 800;
+    }
+
+    .message-text {
+      font-size: 16px;
+      color: #526281;
+      max-width: 580px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .bold {
+      font-weight: 700;
+      color: #273144;
+    }
+
+    .image {
+      max-width: 320px;
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      margin: 12px 0 40px;
+      filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.06));
+    }
+
+    .bottom-content {
+      width: 100%;
+      max-width: 600px;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 36px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .bottom-text {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+
+    .bottom-text p {
+      font-size: 15px;
+      color: #273144;
+    }
+
+    .semi-bold {
+      font-weight: 600;
+    }
+
+    .bottom-info {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 14px 20px;
+      width: 100%;
+      text-align: left;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .bottom-info:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+    }
+
+    .bottom-icon-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: #eef2ff;
+      color: #2a5bd7;
+      flex-shrink: 0;
+    }
+
+    .bottom-info p {
+      font-size: 14px;
+      font-weight: 500;
+      color: #334155;
+    }
+
+    @media (max-width: 640px) {
+      .message-title {
+        display: none;
+      }
+      .message-title.mobile {
+        display: block;
+        font-size: 22px;
+        margin-bottom: 12px;
+      }
+      .content {
+        margin-top: 24px;
+      }
+      .image {
+        max-width: 240px;
+        margin-bottom: 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <div class="logo-container">
+        <a href="/">
+          <img src="/trimly-logo.svg" class="logo" alt="Trimly Logo">
+        </a>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="message-container">
+        <div class="title-container">
+          <h2 class="message-title extra-bold">You're almost there!</h2>
+          <h2 class="message-title extra-bold">Don't forget to finish creating your QR Code.</h2>
+        </div>
+        <h2 class="message-title mobile extra-bold">You're almost there! Don't forget to finish creating your QR Code.</h2>
+        <p class="message-text">If you are seeing this message, your QR Code is still a preview. Make sure you finish customizing your QR Code and then select <span class="bold">'Create QR Code'</span>.</p>
+      </div>
+
+      <img src="/qrcode_image.webp" class="image" alt="QR Code Illustration">
+
+      <div class="bottom-content">
+        <div class="bottom-text">
+          <p class="semi-bold">While you are here...&nbsp;</p>
+          <p class="semi-bold">Check out what else you can do with Trimly</p>
+        </div>
+
+        <div class="bottom-info">
+          <div class="bottom-icon-badge">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+            </svg>
+          </div>
+          <p>Personalize, share, and track your short links</p>
+        </div>
+
+        <div class="bottom-info">
+          <div class="bottom-icon-badge" style="background: #f0fdf4; color: #16a34a;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7"></rect>
+              <rect x="14" y="3" width="7" height="7"></rect>
+              <rect x="14" y="14" width="7" height="7"></rect>
+              <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+          </div>
+          <p>Showcase your important links with a Link-in-bio page</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
