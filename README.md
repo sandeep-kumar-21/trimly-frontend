@@ -12,7 +12,7 @@
 [![Jest](https://img.shields.io/badge/Jest-C21325?style=flat&logo=jest&logoColor=white)](https://jestjs.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Live Demo**: [https://trimly-frontend.vercel.app](https://trimly-frontend.vercel.app) *(<!-- TODO: Replace with your live Vercel deployment URL if different -->)*  
+
 **Backend Repository**: [Trimly Backend (NestJS / MongoDB / Redis / BullMQ)](https://github.com/sandeep-kumar-21/trimly-backend)
 
 ---
