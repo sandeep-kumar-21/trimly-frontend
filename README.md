@@ -13,7 +13,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **Live Demo**: [https://trimly-frontend.vercel.app](https://trimly-frontend.vercel.app) *(<!-- TODO: Replace with your live Vercel deployment URL if different -->)*  
-**Backend Repository**: [Trimly Backend (NestJS / MongoDB / Redis / BullMQ)](../trimly-backend)
+**Backend Repository**: [Trimly Backend (NestJS / MongoDB / Redis / BullMQ)](https://github.com/sandeep-kumar-21/trimly-backend)
 
 ---
 
@@ -534,9 +534,8 @@ Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
 
 ## Author & Contact
 
-**Your Name**  
-- **Portfolio**: [yourportfolio.dev](https://yourportfolio.dev) <!-- TODO: Add portfolio link -->
-- **LinkedIn**: [linkedin.com/in/yourprofile](https://linkedin.com/in/yourprofile) <!-- TODO: Add LinkedIn link -->
-- **GitHub**: [@your-username](https://github.com/your-username) <!-- TODO: Add GitHub username -->
+**Sandeep Kumar**  
+- **LinkedIn**: [sandeep-kumar-s21](https://www.linkedin.com/in/sandeep-kumar-s21)
+- **GitHub**: [sandeep-kumar-21](https://github.com/sandeep-kumar-21)
 
 *Trimly was designed and built as a full-stack portfolio demonstration of production-grade modern frontend architecture, state separation, and real-time dashboard engineering.*
