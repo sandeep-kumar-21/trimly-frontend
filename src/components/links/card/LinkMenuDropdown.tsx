@@ -70,7 +70,7 @@ export const LinkMenuDropdown: React.FC<LinkMenuDropdownProps> = ({
             type="button"
             onClick={() => {
               onClose();
-              router.push(`/qrcodes/${shortCode}/details`);
+              router.push(`/links/${shortCode}/details`);
             }}
             className="flex w-full items-center gap-2.5 px-3.5 py-1.5 sm:py-2 text-left text-sm font-medium text-[#273144] hover:bg-[#f4f6f8] dark:text-slate-100 dark:hover:bg-slate-800/80 transition-colors cursor-pointer"
           >
