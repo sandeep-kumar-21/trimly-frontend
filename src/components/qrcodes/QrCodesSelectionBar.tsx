@@ -4,6 +4,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ChevronDown, Check, X } from 'lucide-react';
 import { useBulkLinks } from '@/hooks/useBulkLinks';
 import { TriStateTagPicker } from '../links/TriStateTagPicker';
+import { CustomSelect } from '@/components/ui/CustomSelect';
+import { Checkbox } from '@/components/ui/Checkbox';
 import { createPortal } from 'react-dom';
 
 export interface QrCodesSelectionBarProps {
@@ -29,7 +31,6 @@ export const QrCodesSelectionBar: React.FC<QrCodesSelectionBarProps> = ({
   onStatusFilterChange = () => {},
   onExportClick,
 }) => {
-  const [isStatusOpen, setIsStatusOpen] = useState(false);
   const [isTagPopoverOpen, setIsTagPopoverOpen] = useState(false);
   const [isHideModalOpen, setIsHideModalOpen] = useState(false);
 
@@ -73,7 +74,7 @@ export const QrCodesSelectionBar: React.FC<QrCodesSelectionBarProps> = ({
     }
   };
 
-  const displayStatus =
+  const displayStatus: 'Active' | 'Hidden' | 'Customized' | 'All' =
     normalizedStatus === 'active'
       ? 'Active'
       : normalizedStatus === 'hidden'
@@ -83,10 +84,10 @@ export const QrCodesSelectionBar: React.FC<QrCodesSelectionBarProps> = ({
       : 'All';
 
   return (
-    <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+    <div className="flex flex-row items-center justify-between gap-2 sm:gap-4 w-full">
       {/* Left Selection Tools (Select All, Export, Hide/Unhide, Tag) */}
-      <div className="flex items-center gap-7 text-sm font-medium pl-3.5 sm:pl-4">
-        <div className="flex items-center gap-2.5 min-w-[110px] shrink-0">
+      <div className="flex items-center gap-2 sm:gap-6 text-xs sm:text-sm font-medium pl-0 sm:pl-4 min-w-0">
+        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
           <button
             type="button"
             onClick={hasSelection ? onClearSelection : onSelectAll}
@@ -109,7 +110,7 @@ export const QrCodesSelectionBar: React.FC<QrCodesSelectionBarProps> = ({
               <div className="h-4.5 w-4.5 rounded-xs border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 hover:border-[#2a5bd7] transition-colors" />
             )}
           </button>
-          <span className="text-sm font-normal text-[#273144] dark:text-slate-200 whitespace-nowrap">
+          <span className="text-xs sm:text-sm font-normal text-[#273144] dark:text-slate-200 whitespace-nowrap">
             {selectedCount} selected
           </span>
         </div>
@@ -118,7 +119,7 @@ export const QrCodesSelectionBar: React.FC<QrCodesSelectionBarProps> = ({
           type="button"
           onClick={onExportClick}
           disabled={!hasSelection}
-          className={`text-sm font-medium transition-colors ${
+          className={`text-xs sm:text-sm font-medium transition-colors shrink-0 ${
             hasSelection ? 'text-[#273144] hover:text-[#2a5bd7] dark:text-slate-200 cursor-pointer' : 'text-[#94a3b8] opacity-80 cursor-not-allowed'
           }`}
         >
@@ -130,7 +131,7 @@ export const QrCodesSelectionBar: React.FC<QrCodesSelectionBarProps> = ({
             type="button"
             disabled={!hasSelection}
             onClick={() => setIsHideModalOpen(true)}
-            className={`text-sm font-medium transition-colors ${
+            className={`text-xs sm:text-sm font-medium transition-colors shrink-0 ${
               hasSelection ? 'text-[#273144] hover:text-[#2a5bd7] dark:text-slate-200 cursor-pointer' : 'text-[#94a3b8] opacity-80 cursor-not-allowed'
             }`}
           >
@@ -139,12 +140,12 @@ export const QrCodesSelectionBar: React.FC<QrCodesSelectionBarProps> = ({
         )}
 
         {!isHiddenSelected && (
-          <div className="relative" ref={tagRef}>
+          <div className="relative shrink-0" ref={tagRef}>
             <button
               type="button"
               disabled={!hasSelection}
               onClick={() => setIsTagPopoverOpen(!isTagPopoverOpen)}
-              className={`text-sm font-medium transition-colors ${
+              className={`text-xs sm:text-sm font-medium transition-colors ${
                 hasSelection ? 'text-[#273144] hover:text-[#2a5bd7] dark:text-slate-200 cursor-pointer' : 'text-[#94a3b8] opacity-80 cursor-not-allowed'
               } ${isTagPopoverOpen ? 'text-[#2a5bd7]' : ''}`}
             >
@@ -152,7 +153,7 @@ export const QrCodesSelectionBar: React.FC<QrCodesSelectionBarProps> = ({
             </button>
 
             {isTagPopoverOpen && hasSelection && (
-              <div className="absolute top-full left-0 mt-2 z-50">
+              <div className="absolute top-full left-0 sm:left-auto sm:right-0 mt-2 z-50 max-w-[calc(100vw-2rem)]">
                 <TriStateTagPicker
                   selectedLinkTags={selectedLinkTags}
                   onAddTag={handleAddTag}
@@ -185,7 +186,7 @@ export const QrCodesSelectionBar: React.FC<QrCodesSelectionBarProps> = ({
               <button
                 type="button"
                 onClick={() => setIsHideModalOpen(false)}
-                className="px-4 py-2 rounded-lg border border-slate-300 bg-white text-sm font-semibold text-[#273144] hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 cursor-pointer"
+                className="px-4 py-2 rounded-md border border-slate-300 bg-white text-sm font-semibold text-[#273144] hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 cursor-pointer"
               >
                 Cancel
               </button>
@@ -193,7 +194,7 @@ export const QrCodesSelectionBar: React.FC<QrCodesSelectionBarProps> = ({
                 type="button"
                 onClick={handleBulkToggleHide}
                 disabled={isBulkHiding}
-                className="px-4 py-2 rounded-lg bg-[#2a5bd7] text-white text-sm font-bold hover:bg-[#1a4bb7] disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer"
+                className="px-4 py-2 rounded-md bg-[#2a5bd7] text-white text-sm font-bold hover:bg-[#1a4bb7] disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer"
               >
                 {isHiddenSelected ? `Unhide QR code${selectedCount === 1 ? '' : 's'}` : `Hide QR code${selectedCount === 1 ? '' : 's'}`}
               </button>
@@ -204,46 +205,17 @@ export const QrCodesSelectionBar: React.FC<QrCodesSelectionBarProps> = ({
       )}
 
       {/* Right Status Dropdown ONLY */}
-      <div className="flex items-center gap-5">
-        <div className="relative">
-          <button
-            type="button"
-            onClick={() => setIsStatusOpen(!isStatusOpen)}
-            className={`flex items-center justify-between gap-3 rounded-lg border bg-white px-3.5 py-2 text-sm font-semibold text-[#273144] shadow-2xs transition-all cursor-pointer dark:bg-slate-900 dark:text-slate-100 ${
-              isStatusOpen
-                ? 'border-blue-500 ring-2 ring-blue-100 dark:border-blue-500 dark:ring-blue-950'
-                : 'border-slate-300 dark:border-slate-800 hover:border-slate-400'
-            }`}
-          >
-            <span>Show: {displayStatus}</span>
-            <ChevronDown className={`h-4 w-4 text-[#273144] transition-transform duration-200 ${isStatusOpen ? 'rotate-180' : ''}`} />
-          </button>
-
-          {isStatusOpen && (
-            <div
-              className="absolute right-0 top-full mt-1.5 w-44 rounded-xl bg-white p-1.5 shadow-xl border border-slate-200/90 z-30 dark:bg-slate-900 dark:border-slate-800 animate-in fade-in zoom-in-95 duration-150"
-              onMouseLeave={() => setIsStatusOpen(false)}
-            >
-              {(['Active', 'Hidden', 'Customized', 'All'] as const).map((opt) => (
-                <button
-                  key={opt}
-                  type="button"
-                  onClick={() => {
-                    onStatusFilterChange(opt);
-                    setIsStatusOpen(false);
-                  }}
-                  className={`w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg transition-colors cursor-pointer ${
-                    displayStatus === opt
-                      ? 'bg-slate-100/80 text-[#273144] dark:bg-slate-800 dark:text-white font-bold'
-                      : 'text-[#273144] hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800/60'
-                  }`}
-                >
-                  <span>{opt}</span>
-                  {displayStatus === opt && <Check className="h-4 w-4 text-[#273144] dark:text-white" />}
-                </button>
-              ))}
-            </div>
-          )}
+      <div className="flex items-center justify-end gap-2 sm:gap-5 shrink-0">
+        <div className="w-auto min-w-[110px] sm:w-44 shrink-0">
+          <CustomSelect<'Active' | 'Hidden' | 'Customized' | 'All'>
+            size="sm"
+            triggerPrefix="Show: "
+            triggerClassName="h-8 sm:h-9 px-2 sm:px-3 text-xs sm:text-sm font-semibold"
+            options={['Active', 'Hidden', 'Customized', 'All']}
+            value={displayStatus}
+            onChange={(val) => onStatusFilterChange(val)}
+            align="right"
+          />
         </div>
       </div>
     </div>

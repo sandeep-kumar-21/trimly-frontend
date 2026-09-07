@@ -63,26 +63,26 @@ export const HideModal: React.FC<HideModalProps> = ({
     : 'Hide link';
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 select-none">
-      {/* Full Page Backdrop covering Sidebar & Topbar */}
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 md:p-6 overflow-y-auto select-none">
+      {/* Full Page Backdrop covering Sidebar & Topbar (No blur) */}
       <div
-        className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
+        className="fixed inset-0 bg-slate-900/60 transition-opacity animate-in fade-in duration-200"
         onClick={onClose}
         aria-hidden="true"
       />
 
       {/* Modal Dialog Box */}
       <div
-        className="relative z-10 w-full max-w-md overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900 animate-in zoom-in-95 duration-150 space-y-5"
+        className="relative z-10 w-full max-w-md overflow-hidden rounded-xl border border-slate-200 bg-white p-4.5 sm:p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900 animate-in zoom-in-95 duration-150 space-y-4 sm:space-y-5 max-h-[calc(100vh-2rem)] overflow-y-auto my-auto"
         role="dialog"
         aria-modal="true"
         aria-labelledby="hide-modal-title"
       >
         {/* Modal Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-3">
           <h2
             id="hide-modal-title"
-            className="text-xl sm:text-2xl font-bold tracking-tight text-[#273144] dark:text-slate-100"
+            className="text-lg sm:text-2xl font-bold tracking-tight text-[#273144] dark:text-slate-100 truncate"
           >
             {title}
           </h2>
@@ -90,24 +90,24 @@ export const HideModal: React.FC<HideModalProps> = ({
             type="button"
             onClick={onClose}
             aria-label="Close modal"
-            className="p-1 rounded-md text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors cursor-pointer"
+            className="p-1 rounded-md text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors cursor-pointer shrink-0"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
         {/* Modal Body / Content */}
-        <p className="text-sm sm:text-base text-[#273144] dark:text-slate-300 leading-relaxed font-medium">
+        <p className="text-xs sm:text-sm text-[#273144] dark:text-slate-300 leading-relaxed font-medium">
           {description}
         </p>
 
-        {/* Modal Footer Buttons (Aligned Right) */}
-        <div className="flex items-center justify-end gap-3 pt-2">
+        {/* Modal Footer Buttons (Responsive flex) */}
+        <div className="flex items-center justify-end gap-2.5 sm:gap-3 pt-2">
           <button
             type="button"
             onClick={onClose}
             disabled={isLoading}
-            className="h-10 px-5 rounded-lg border border-slate-300 bg-white font-bold text-[#273144] text-sm hover:bg-slate-50 transition-colors shadow-2xs cursor-pointer dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 disabled:opacity-50"
+            className="h-9 sm:h-10 px-4 sm:px-5 rounded-lg sm:rounded-md border border-slate-300 bg-white font-bold text-[#273144] text-xs sm:text-sm hover:bg-slate-50 transition-colors shadow-2xs cursor-pointer dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 disabled:opacity-50"
           >
             Cancel
           </button>
@@ -115,9 +115,9 @@ export const HideModal: React.FC<HideModalProps> = ({
             type="button"
             onClick={onConfirm}
             disabled={isLoading}
-            className="h-10 px-5 rounded-lg bg-[#2a5bd7] font-bold text-white text-sm hover:bg-[#1d4cc9] transition-colors shadow-2xs cursor-pointer disabled:opacity-50"
+            className="h-9 sm:h-10 px-4 sm:px-5 rounded-lg sm:rounded-md bg-[#2a5bd7] font-bold text-white text-xs sm:text-sm hover:bg-[#1d4cc9] transition-colors shadow-2xs cursor-pointer disabled:opacity-50"
           >
-            {isLoading ? 'Hiding...' : confirmText}
+            {isLoading ? 'Processing...' : confirmText}
           </button>
         </div>
       </div>

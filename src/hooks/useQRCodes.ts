@@ -23,7 +23,7 @@ export function useQrCodeDetails(code: string) {
     queryKey: ['qrcodes', code, 'details'],
     queryFn: () => qrcodesApi.getQrCodeDetails(code),
     enabled: !!code,
-    staleTime: 0,
+    staleTime: 1000 * 30,
   });
 }
 
@@ -32,10 +32,17 @@ export function useCreateQrCode() {
 
   return useMutation({
     mutationFn: (payload: CreateQrCodePayload) => qrcodesApi.createQrCode(payload),
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast.success('QR Code saved successfully!');
+      if (data?.qrCode) {
+        queryClient.setQueriesData({ queryKey: QRCODES_QUERY_KEY }, (old: any = []) => {
+          if (!Array.isArray(old)) return [data.qrCode];
+          return [data.qrCode, ...old.filter((q: any) => (q.id || q._id || q.shortCode) !== (data.qrCode.id || data.qrCode._id || data.qrCode.shortCode))];
+        });
+      }
       queryClient.invalidateQueries({ queryKey: QRCODES_QUERY_KEY });
       queryClient.invalidateQueries({ queryKey: ['links'] });
+      queryClient.invalidateQueries({ queryKey: ['link'] });
     },
     onError: (error: any) => {
       const message = error.response?.data?.message || 'Failed to save QR Code';

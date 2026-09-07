@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ChevronUp, ChevronDown, Crown, Sparkles } from 'lucide-react';
+import { ChevronUp, ChevronDown, Crown, Sparkles, Clock, Zap } from 'lucide-react';
+import { ToggleSwitch } from '@/components/ui/ToggleSwitch';
 
 export const LinkAdvancedSettingsCard: React.FC = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -38,70 +39,46 @@ export const LinkAdvancedSettingsCard: React.FC = () => {
               <Crown className="h-3.5 w-3.5 text-teal-600 dark:text-teal-400 fill-teal-600" />
             </div>
 
-            <button
-              type="button"
-              role="switch"
-              aria-checked={enableUtm}
-              onClick={() => setEnableUtm(!enableUtm)}
-              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden ${enableUtm ? 'bg-[#2a5bd7]' : 'bg-slate-200 dark:bg-slate-700'
-                }`}
-            >
-              <span
-                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out ${enableUtm ? 'translate-x-5' : 'translate-x-0'
-                  }`}
-              />
-            </button>
+            <ToggleSwitch
+              checked={enableUtm}
+              onChange={setEnableUtm}
+              aria-label="Toggle UTM parameters"
+            />
           </div>
 
           {/* Option 2: Link Expiration */}
           <div className="flex items-center justify-between py-1 border-t border-slate-100 pt-3 dark:border-slate-800">
             <div className="flex items-center gap-2">
-              <span className="text-sm font-bold text-slate-600 dark:text-slate-400">🕒</span>
+              <Clock className="h-4 w-4 text-slate-500 dark:text-slate-400" />
               <span className="text-sm font-bold text-[#273144] dark:text-slate-100">
                 Link expiration
               </span>
               <Crown className="h-3.5 w-3.5 text-teal-600 dark:text-teal-400 fill-teal-600" />
             </div>
 
-            <button
-              type="button"
-              role="switch"
-              aria-checked={enableExpiration}
-              onClick={() => setEnableExpiration(!enableExpiration)}
-              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden ${enableExpiration ? 'bg-[#2a5bd7]' : 'bg-slate-200 dark:bg-slate-700'
-                }`}
-            >
-              <span
-                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out ${enableExpiration ? 'translate-x-5' : 'translate-x-0'
-                  }`}
-              />
-            </button>
+            <ToggleSwitch
+              checked={enableExpiration}
+              onChange={setEnableExpiration}
+              aria-label="Toggle expiration"
+            />
           </div>
 
           {/* Option 3: Dynamic Routing */}
           <div className="space-y-2 border-t border-slate-100 pt-3 dark:border-slate-800">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="text-sm font-bold text-slate-600 dark:text-slate-400">⚡</span>
+                <Zap className="h-4 w-4 text-slate-500 dark:text-slate-400" />
                 <span className="text-sm font-bold text-[#273144] dark:text-slate-100">
                   Dynamic routing
                 </span>
                 <Crown className="h-3.5 w-3.5 text-teal-600 dark:text-teal-400 fill-teal-600" />
               </div>
 
-              <button
-                type="button"
-                role="switch"
-                aria-checked={enableDynamic}
-                onClick={() => setEnableDynamic(!enableDynamic)}
-                className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden ${enableDynamic ? 'bg-[#2a5bd7]' : 'bg-slate-200 dark:bg-slate-700'
-                  }`}
-              >
-                <span
-                  className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out ${enableDynamic ? 'translate-x-5' : 'translate-x-0'
-                    }`}
-                />
-              </button>
+              <ToggleSwitch
+                checked={enableDynamic}
+                onChange={setEnableDynamic}
+                aria-label="Toggle dynamic routing"
+              />
             </div>
             <p className="text-xs text-slate-500 leading-relaxed dark:text-slate-400">
               Direct visitors to different destination URLs based on conditions such as device or location. Rules apply in order, and traffic is routed based on the first condition matched.{' '}

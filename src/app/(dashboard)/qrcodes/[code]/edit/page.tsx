@@ -19,6 +19,7 @@ export default function QrCodeEditPage() {
     queryKey: ['link', code],
     queryFn: () => linksApi.getLinkByCode(code),
     enabled: !!code,
+    staleTime: 1000 * 60,
   });
 
   const handleSave = async (data: { title: string; tags: string[]; destinationUrl: string }) => {

@@ -61,11 +61,21 @@ export default function CreateLinkPage() {
       formattedUrl = `https://${formattedUrl}`;
     }
 
+    const parsedTags = tags
+      ? tags
+          .split(',')
+          .map((t) => t.trim().slice(0, 7).replace(/[^a-zA-Z0-9_-]/g, ''))
+          .filter(Boolean)
+          .slice(0, 10)
+      : undefined;
+
     try {
       await createLinkMutation.mutateAsync({
         longUrl: formattedUrl,
         customAlias: backHalf.trim() || undefined,
         title: title.trim() || undefined,
+        tags: parsedTags && parsedTags.length > 0 ? parsedTags : undefined,
+        generateQrCode: alsoCreateQr,
       });
 
       if (alsoCreateQr) {
@@ -81,7 +91,7 @@ export default function CreateLinkPage() {
   };
 
   return (
-    <div className="space-y-6 pb-6">
+    <div className="space-y-6">
       {/* Top Header Row */}
       <div className="flex items-center justify-between max-w-3xl mx-auto">
         <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#273144] dark:text-slate-100">
@@ -142,7 +152,7 @@ export default function CreateLinkPage() {
         <SharedCreationActionBar
           onCancel={handleCancel}
           onSubmit={handleSubmit}
-          submitText={alsoCreateQr ? 'Design your code >' : 'Create your link'}
+          submitText="Create your link"
           isLoading={createLinkMutation.isPending}
         />
       </div>

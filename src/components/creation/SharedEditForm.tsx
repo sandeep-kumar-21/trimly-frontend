@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { Copy, Edit2, CornerDownRight, X, AlertCircle, Palette, RotateCcw } from 'lucide-react';
+import { Copy, Edit2, CornerDownRight, X, AlertCircle, Palette, RotateCcw, Check, Plus, Tag as TagIcon } from 'lucide-react';
 import { toast } from 'sonner';
+import { copyToClipboard } from '@/lib/utils/clipboard';
+import { useTags } from '@/hooks/useTags';
 import { ResetDraftModal } from '@/components/modals/ResetDraftModal';
 import { UnsavedChangesModal } from '@/components/modals/UnsavedChangesModal';
 
@@ -48,6 +50,12 @@ export const SharedEditForm: React.FC<SharedEditFormProps> = ({
   const [title, setTitle] = useState(initialTitle);
   const [tags, setTags] = useState<string[]>(initialTags);
   const [tagInput, setTagInput] = useState('');
+  const [isTagDropdownOpen, setIsTagDropdownOpen] = useState(false);
+  const tagDropdownRef = useRef<HTMLDivElement>(null);
+  const tagInputRef = useRef<HTMLInputElement>(null);
+
+  const { tags: allExistingTags = [], isLoading: isLoadingTags } = useTags();
+
   const [destinationUrl, setDestinationUrl] = useState(initialDestinationUrl);
   const [isEditingDestination, setIsEditingDestination] = useState(false);
   const [showAlert, setShowAlert] = useState(true);
@@ -64,6 +72,31 @@ export const SharedEditForm: React.FC<SharedEditFormProps> = ({
     JSON.stringify(tags) !== JSON.stringify(initialTags) ||
     destinationUrl !== initialDestinationUrl ||
     customBackHalf !== shortCode;
+
+  // Close tag dropdown on click outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (tagDropdownRef.current && !tagDropdownRef.current.contains(e.target as Node)) {
+        setIsTagDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const filteredAvailableTags = useMemo(() => {
+    const search = tagInput.trim().toLowerCase();
+    if (!search) {
+      return allExistingTags;
+    }
+    return allExistingTags.filter((t) => t.toLowerCase().includes(search));
+  }, [allExistingTags, tagInput]);
+
+  const exactMatchExists = useMemo(() => {
+    const search = tagInput.trim().toLowerCase();
+    if (!search) return false;
+    return allExistingTags.some((t) => t.toLowerCase() === search);
+  }, [allExistingTags, tagInput]);
 
   // Prompt user if closing or refreshing tab with unsaved edits
   useEffect(() => {
@@ -249,23 +282,111 @@ export const SharedEditForm: React.FC<SharedEditFormProps> = ({
     return svg;
   }, [qrPreviewSvg, shortCode]);
 
-  const handleAddTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && tagInput.trim()) {
-      e.preventDefault();
-      if (!tags.includes(tagInput.trim())) {
-        setTags([...tags, tagInput.trim()]);
-      }
+  const handleSelectTag = (tagToAdd: string) => {
+    const raw = tagToAdd.trim();
+    if (!raw) {
+      toast.warning('Please enter a tag.');
+      return;
+    }
+
+    if (tags.length >= 10 && !tags.some((t) => t.toLowerCase() === raw.toLowerCase())) {
+      toast.warning('A link cannot have more than 10 tags.');
+      return;
+    }
+
+    if (raw.length > 7) {
+      toast.warning('Each tag cannot exceed 7 characters.');
+    }
+
+    if (/[^a-zA-Z0-9_-]/.test(raw)) {
+      toast.warning('Tags can only contain letters, numbers, hyphens, and underscores.');
+    }
+
+    const cleanTag = raw.replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 7);
+    if (!cleanTag) {
       setTagInput('');
+      return;
+    }
+
+    if (tags.some((t) => t.toLowerCase() === cleanTag.toLowerCase())) {
+      toast.warning(`Tag "${cleanTag}" is already added.`);
+      setTagInput('');
+      return;
+    }
+
+    setTags([...tags, cleanTag]);
+    toast.success(`Tag "${cleanTag}" added.`);
+    setTagInput('');
+    setIsTagDropdownOpen(false);
+    tagInputRef.current?.focus();
+  };
+
+  const handleToggleTag = (t: string) => {
+    if (tags.some((item) => item.toLowerCase() === t.toLowerCase())) {
+      handleRemoveTag(t);
+    } else {
+      handleSelectTag(t);
+    }
+  };
+
+  const handleAddTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      e.stopPropagation();
+      const raw = tagInput.trim();
+      if (!raw) {
+        toast.warning('Please enter a tag.');
+        return;
+      }
+
+      if (tags.length >= 10) {
+        toast.warning('A link cannot have more than 10 tags.');
+        return;
+      }
+
+      if (raw.length > 7) {
+        toast.warning('Each tag cannot exceed 7 characters.');
+      }
+
+      if (/[^a-zA-Z0-9_-]/.test(raw)) {
+        toast.warning('Tags can only contain letters, numbers, hyphens, and underscores.');
+      }
+
+      const val = raw.replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 7);
+      if (!val) {
+        setTagInput('');
+        return;
+      }
+
+      if (tags.some((t) => t.toLowerCase() === val.toLowerCase())) {
+        toast.warning(`Tag "${val}" is already added.`);
+        setTagInput('');
+        return;
+      }
+
+      setTags([...tags, val]);
+      toast.success(`Tag "${val}" added.`);
+      setTagInput('');
+      setIsTagDropdownOpen(false);
+    } else if (e.key === 'Backspace' && !tagInput && tags.length > 0) {
+      setTags(tags.slice(0, -1));
+    } else if (e.key === 'Escape') {
+      setIsTagDropdownOpen(false);
     }
   };
 
   const handleRemoveTag = (tagToRemove: string) => {
-    setTags(tags.filter((t) => t !== tagToRemove));
+    setTags(tags.filter((t) => t.toLowerCase() !== tagToRemove.toLowerCase()));
   };
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(shortUrl);
-    toast.success('Short link copied to clipboard!');
+  const handleCopy = async () => {
+    if (!shortUrl) return;
+    const success = await copyToClipboard(shortUrl);
+    if (success) {
+      toast.success('Short link copied to clipboard!');
+    } else {
+      toast.error('Failed to copy link');
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -273,31 +394,43 @@ export const SharedEditForm: React.FC<SharedEditFormProps> = ({
     if (typeof window !== 'undefined' && shortCode) {
       sessionStorage.removeItem(`edit_draft_${type}_${shortCode}`);
     }
-    if (onSave) {
-      const targetUrl = await onSave({
-        title,
-        tags,
-        destinationUrl,
-        customBackHalf: customBackHalf.trim() !== shortCode ? customBackHalf.trim() : undefined,
-      });
-      if (typeof targetUrl === 'string') {
-        router.push(targetUrl);
+    try {
+      if (onSave) {
+        const targetUrl = await onSave({
+          title,
+          tags,
+          destinationUrl,
+          customBackHalf: customBackHalf.trim() !== shortCode ? customBackHalf.trim() : undefined,
+        });
+        if (typeof targetUrl === 'string') {
+          router.push(targetUrl);
+        } else {
+          router.push(isQrMode ? '/qrcodes' : '/links');
+        }
       } else {
-        router.push(isQrMode ? '/qrcodes' : '/links');
+        toast.success(`${isQrMode ? 'QR Code' : 'Link'} changes saved successfully!`);
       }
-    } else {
-      toast.success(`${isQrMode ? 'QR Code' : 'Link'} changes saved successfully!`);
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || err?.message || 'Failed to save changes');
     }
   };
 
   return (
     <>
-      <div className="-mx-6 -my-6 sm:-mx-12 sm:-my-8 lg:-mx-16 lg:-my-10 p-6 sm:p-12 lg:p-16 min-h-[calc(100vh-3.5rem)] bg-white dark:bg-slate-900 transition-colors">
+      <div className="w-full">
       <div className="mx-auto max-w-[1440px]">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
           {/* Left Column: Edit Form Cards */}
-          <form onSubmit={handleSubmit} className={`${isQrMode ? 'lg:col-span-7' : 'lg:col-span-12 max-w-3xl'} space-y-8`}>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#273144] dark:text-slate-100 mb-2">
+          <form
+            onSubmit={handleSubmit}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && (e.target as HTMLElement).tagName === 'INPUT') {
+                e.preventDefault();
+              }
+            }}
+            className={`${isQrMode ? 'lg:col-span-7' : 'lg:col-span-12 max-w-3xl'} space-y-6 sm:space-y-8`}
+          >
+          <h1 className="text-xl sm:text-3xl font-bold tracking-tight text-[#273144] dark:text-slate-100 mb-1 sm:mb-2">
             {isQrMode ? 'Edit QR Code' : 'Edit link'}
           </h1>
 
@@ -358,22 +491,22 @@ export const SharedEditForm: React.FC<SharedEditFormProps> = ({
                 </div>
               ) : (
                 /* Link Mode Short link with Edit back-half button */
-                <div className="flex items-center gap-3">
+                <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
                   <span className="text-sm font-bold text-[#273144] dark:text-slate-100">
                     {shortUrl.replace(/^https?:\/\//, '')}
                   </span>
 
                   {isEditingBackHalf ? (
-                    <div className="flex items-center gap-2">
-                      <div className="flex items-center rounded-lg border border-slate-300 bg-white px-2.5 shadow-2xs focus-within:border-[#2a5bd7] focus-within:ring-2 focus-within:ring-blue-100 dark:border-slate-700 dark:bg-slate-800">
-                        <span className="text-xs font-semibold text-slate-400 select-none">
+                    <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 w-full sm:w-auto">
+                      <div className="flex items-center rounded-lg border border-slate-300 bg-white px-2.5 shadow-2xs focus-within:border-[#2a5bd7] focus-within:ring-2 focus-within:ring-blue-100 dark:border-slate-700 dark:bg-slate-800 max-w-full">
+                        <span className="text-xs font-semibold text-slate-400 select-none shrink-0">
                           {shortUrl.replace(new RegExp(`/${shortCode}$`), '/') || 'trim.ly/'}
                         </span>
                         <input
                           type="text"
                           value={customBackHalf}
                           onChange={(e) => setCustomBackHalf(e.target.value.replace(/[^a-zA-Z0-9-_]/g, ''))}
-                          className="h-8 w-32 bg-transparent text-sm font-semibold text-slate-800 focus:outline-hidden dark:text-slate-100"
+                          className="h-8 w-28 sm:w-32 bg-transparent text-sm font-semibold text-slate-800 focus:outline-hidden dark:text-slate-100 min-w-0"
                           autoFocus
                         />
                       </div>
@@ -383,7 +516,7 @@ export const SharedEditForm: React.FC<SharedEditFormProps> = ({
                           setIsEditingBackHalf(false);
                           toast.success('Custom back-half updated! Click Save to apply.');
                         }}
-                        className="h-8 px-3 rounded-lg bg-[#2a5bd7] text-xs font-bold text-white hover:bg-[#1d4cc9] cursor-pointer"
+                        className="h-8 px-3 rounded-md bg-[#2a5bd7] text-xs font-bold text-white hover:bg-[#1d4cc9] cursor-pointer shrink-0"
                       >
                         Done
                       </button>
@@ -417,19 +550,19 @@ export const SharedEditForm: React.FC<SharedEditFormProps> = ({
 
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     {isEditingDestination ? (
-                      <div className="flex items-center gap-2 w-full">
+                      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full">
                         <input
                           type="url"
                           value={destinationUrl}
                           onChange={(e) => setDestinationUrl(e.target.value)}
-                          className="flex-1 h-10 rounded-lg border border-slate-300 px-3 text-sm text-slate-900 shadow-2xs focus:border-[#2a5bd7] focus:ring-2 focus:ring-blue-100 focus:outline-hidden dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                          className="flex-1 h-10 rounded-md border border-slate-300 px-3 text-sm text-slate-900 shadow-2xs focus:border-[#2a5bd7] focus:ring-2 focus:ring-blue-100 focus:outline-hidden dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 min-w-0"
                           placeholder="https://example.com"
                           autoFocus
                         />
                         <button
                           type="button"
                           onClick={() => setIsEditingDestination(false)}
-                          className="h-10 px-4 rounded-lg bg-[#2a5bd7] text-xs font-bold text-white hover:bg-[#1d4cc9] cursor-pointer"
+                          className="h-10 px-4 rounded-md bg-[#2a5bd7] text-xs font-bold text-white hover:bg-[#1d4cc9] cursor-pointer shrink-0"
                         >
                           Done
                         </button>
@@ -490,38 +623,121 @@ export const SharedEditForm: React.FC<SharedEditFormProps> = ({
               />
             </div>
 
-            {/* Tags Select Field with Pill Tags */}
-            <div className="space-y-1.5">
-              <label htmlFor="edit-tags" className="block text-sm font-bold text-[#273144] dark:text-slate-200">
-                Tags
-              </label>
-
-              <div className="flex min-h-11 w-full flex-wrap items-center gap-2 rounded-lg border border-slate-300 bg-white p-2 shadow-2xs focus-within:border-[#2a5bd7] focus-within:ring-2 focus-within:ring-blue-100 dark:border-slate-700 dark:bg-slate-800">
-                {tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="inline-flex items-center gap-1.5 rounded-md bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700 dark:bg-slate-700 dark:text-slate-200"
-                  >
-                    <span>{tag}</span>
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveTag(tag)}
-                      className="hover:text-red-500 cursor-pointer p-0.5"
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
+            {/* Tags Select Field with Autocomplete Dropdown */}
+            <div className="space-y-1.5" ref={tagDropdownRef}>
+              <div className="flex items-center justify-between">
+                <label htmlFor="edit-tags" className="block text-sm font-bold text-[#273144] dark:text-slate-200">
+                  Tags <span className="text-xs font-normal text-slate-400">({tags.length}/10)</span>
+                </label>
+                {tags.length >= 10 && (
+                  <span className="text-xs font-medium text-amber-600 dark:text-amber-400">
+                    Maximum 10 tags reached
                   </span>
-                ))}
+                )}
+              </div>
 
-                <input
-                  id="edit-tags"
-                  type="text"
-                  value={tagInput}
-                  onChange={(e) => setTagInput(e.target.value)}
-                  onKeyDown={handleAddTag}
-                  placeholder={tags.length === 0 ? 'Select tags' : 'Add tag...'}
-                  className="flex-1 min-w-[120px] bg-transparent px-2 text-sm text-slate-800 placeholder-slate-400 focus:outline-hidden dark:text-slate-100"
-                />
+              <div className="relative">
+                <div
+                  onClick={() => {
+                    if (tags.length < 10) {
+                      setIsTagDropdownOpen(true);
+                      tagInputRef.current?.focus();
+                    }
+                  }}
+                  className={`flex min-h-11 w-full flex-wrap items-center gap-2 rounded-lg border border-slate-300 bg-white p-2 shadow-2xs ${
+                    tags.length >= 10 ? 'cursor-not-allowed opacity-90' : 'cursor-text focus-within:border-[#2a5bd7] focus-within:ring-2 focus-within:ring-blue-100'
+                  } dark:border-slate-700 dark:bg-slate-800`}
+                >
+                  {tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="inline-flex items-center gap-1.5 rounded-md bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700 dark:bg-slate-700 dark:text-slate-200"
+                    >
+                      <span>{tag}</span>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRemoveTag(tag);
+                        }}
+                        className="hover:text-red-500 cursor-pointer p-0.5"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </span>
+                  ))}
+
+                  <input
+                    ref={tagInputRef}
+                    id="edit-tags"
+                    type="text"
+                    maxLength={7}
+                    disabled={tags.length >= 10}
+                    value={tagInput}
+                    onFocus={() => {
+                      if (tags.length < 10) setIsTagDropdownOpen(true);
+                    }}
+                    onChange={(e) => {
+                      const raw = e.target.value.slice(0, 7);
+                      if (/[^a-zA-Z0-9_-]/.test(raw)) {
+                        toast.warning('Tags can only contain letters, numbers, hyphens, and underscores.');
+                      }
+                      const sanitized = raw.replace(/[^a-zA-Z0-9_-]/g, '');
+                      setTagInput(sanitized);
+                      if (tags.length < 10) setIsTagDropdownOpen(true);
+                    }}
+                    onKeyDown={handleAddTag}
+                    placeholder={tags.length >= 10 ? 'Max 10 tags reached' : tags.length === 0 ? 'Select tags (max 7 chars)' : 'Add tag...'}
+                    className="flex-1 min-w-[120px] bg-transparent px-2 text-sm text-slate-800 placeholder-slate-400 focus:outline-hidden disabled:cursor-not-allowed dark:text-slate-100"
+                  />
+                </div>
+
+                {/* Autocomplete Dropdown */}
+                {isTagDropdownOpen && tags.length < 10 && (
+                  <div className="absolute left-0 top-full z-50 mt-1.5 w-full rounded-md border border-slate-200/90 bg-white py-1 shadow-lg dark:border-slate-800 dark:bg-slate-900 animate-in fade-in zoom-in-95 duration-100 max-h-60 overflow-y-auto overflow-hidden">
+                    {/* If user typed a custom tag that isn't in existing list */}
+                    {tagInput.trim() && !exactMatchExists && (
+                      <button
+                        type="button"
+                        onClick={() => handleSelectTag(tagInput)}
+                        className="flex w-full items-center gap-2.5 px-3.5 py-1.5 sm:py-2 text-left text-sm font-medium text-[#273144] hover:bg-[#f4f6f8] dark:text-slate-100 dark:hover:bg-slate-800/80 cursor-pointer transition-colors"
+                      >
+                        <Plus className="h-4 w-4" />
+                        <span>Create tag <strong>"{tagInput.trim()}"</strong></span>
+                      </button>
+                    )}
+
+                    {/* Existing tags list */}
+                    {filteredAvailableTags.length > 0 ? (
+                      <div className="space-y-0.5">
+                        <div className="px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-slate-400">
+                          Existing tags
+                        </div>
+                        {filteredAvailableTags.map((t) => {
+                          const isSelected = tags.includes(t);
+                          return (
+                            <button
+                              key={t}
+                              type="button"
+                              onClick={() => handleToggleTag(t)}
+                              className="flex w-full items-center justify-between gap-2.5 px-3.5 py-1.5 sm:py-2 text-left text-sm font-medium transition-colors cursor-pointer text-[#273144] hover:bg-[#f4f6f8] dark:text-slate-100 dark:hover:bg-slate-800/80"
+                            >
+                              <div className="flex items-center gap-2 truncate">
+                                <TagIcon className="h-3.5 w-3.5 text-slate-400" />
+                                <span className="truncate">{t}</span>
+                              </div>
+                              {isSelected && <Check className="h-4 w-4 text-[#273144] dark:text-slate-100 stroke-[2] shrink-0" />}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    ) : !tagInput.trim() ? (
+                      <div className="px-3.5 py-2.5 text-center text-xs text-slate-400">
+                        No existing tags found. Type to create a new tag.
+                      </div>
+                    ) : null}
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -555,19 +771,19 @@ export const SharedEditForm: React.FC<SharedEditFormProps> = ({
 
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   {isEditingDestination ? (
-                    <div className="flex items-center gap-2 w-full">
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full">
                       <input
                         type="url"
                         value={destinationUrl}
                         onChange={(e) => setDestinationUrl(e.target.value)}
-                        className="flex-1 h-10 rounded-lg border border-slate-300 px-3 text-sm text-slate-900 shadow-2xs focus:border-[#2a5bd7] focus:ring-2 focus:ring-blue-100 focus:outline-hidden dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                        className="flex-1 h-10 rounded-md border border-slate-300 px-3 text-sm text-slate-900 shadow-2xs focus:border-[#2a5bd7] focus:ring-2 focus:ring-blue-100 focus:outline-hidden dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 min-w-0"
                         placeholder="https://example.com"
                         autoFocus
                       />
                       <button
                         type="button"
                         onClick={() => setIsEditingDestination(false)}
-                        className="h-10 px-4 rounded-lg bg-[#2a5bd7] text-xs font-bold text-white hover:bg-[#1d4cc9] cursor-pointer"
+                        className="h-10 px-4 rounded-md bg-[#2a5bd7] text-xs font-bold text-white hover:bg-[#1d4cc9] cursor-pointer shrink-0"
                       >
                         Done
                       </button>
@@ -607,17 +823,17 @@ export const SharedEditForm: React.FC<SharedEditFormProps> = ({
           )}
 
           {/* Action Buttons: Save changes & Cancel & Reset to original */}
-          <div className="flex flex-wrap items-center gap-4 pt-6">
+          <div className="flex flex-wrap items-center gap-2.5 sm:gap-4 pt-4 sm:pt-6">
             <button
               type="submit"
-              className="h-10 px-6 rounded-lg bg-[#2a5bd7] font-bold text-white text-sm hover:bg-[#1d4cc9] shadow-2xs transition-colors cursor-pointer"
+              className="h-9 sm:h-10 px-4 sm:px-6 rounded-lg sm:rounded-md bg-[#2a5bd7] font-bold text-white text-xs sm:text-sm hover:bg-[#1d4cc9] shadow-2xs transition-colors cursor-pointer"
             >
               {isQrMode ? 'Save changes' : 'Save'}
             </button>
             <button
               type="button"
               onClick={handleCancelClick}
-              className="h-10 px-4 rounded-lg text-sm font-bold text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition-colors cursor-pointer"
+              className="h-9 sm:h-10 px-3 sm:px-4 rounded-lg sm:rounded-md text-xs sm:text-sm font-bold text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition-colors cursor-pointer"
             >
               Cancel
             </button>
@@ -625,10 +841,10 @@ export const SharedEditForm: React.FC<SharedEditFormProps> = ({
               <button
                 type="button"
                 onClick={() => setIsResetModalOpen(true)}
-                className="inline-flex items-center gap-1.5 text-sm font-bold text-[#2a5bd7] hover:underline cursor-pointer dark:text-blue-400 sm:ml-auto"
+                className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#2a5bd7] hover:underline cursor-pointer dark:text-blue-400 sm:ml-auto"
                 title="Discard all un-saved changes and restore original values"
               >
-                <RotateCcw className="h-4 w-4" />
+                <RotateCcw className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 <span>Reset to original</span>
               </button>
             )}

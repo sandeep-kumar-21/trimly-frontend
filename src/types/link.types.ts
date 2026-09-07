@@ -40,6 +40,7 @@ export interface CreateLinkPayload {
   utmCampaign?: string;
   utmTerm?: string;
   utmContent?: string;
+  generateQrCode?: boolean;
 }
 
 export interface UpdateLinkPayload {

@@ -1,6 +1,9 @@
 import React, { useState, useMemo } from 'react';
-import { Search, Minus } from 'lucide-react';
+import { Minus } from 'lucide-react';
 import { useTags } from '@/hooks/useTags';
+import { SearchInput } from '@/components/ui/SearchInput';
+import { Checkbox } from '@/components/ui/Checkbox';
+import { toast } from 'sonner';
 
 export interface TriStateTagPickerProps {
   selectedLinkTags: string[][]; // Array of tags arrays from the selected links
@@ -39,10 +42,30 @@ export const TriStateTagPicker: React.FC<TriStateTagPickerProps> = ({
   );
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && searchTerm.trim() !== '') {
+    if (e.key === 'Enter') {
       e.preventDefault();
-      const newTag = searchTerm.trim();
-      onAddTag(newTag);
+      const raw = searchTerm.trim();
+      if (!raw) {
+        toast.warning('Please enter a tag.');
+        return;
+      }
+
+      if (raw.length > 7) {
+        toast.warning('Each tag cannot exceed 7 characters.');
+      }
+
+      if (/[^a-zA-Z0-9_-]/.test(raw)) {
+        toast.warning('Tags can only contain letters, numbers, hyphens, and underscores.');
+      }
+
+      const cleanTag = raw.replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 7);
+      if (!cleanTag) {
+        setSearchTerm('');
+        return;
+      }
+
+      onAddTag(cleanTag);
+      toast.success(`Tag "${cleanTag}" applied to selected links.`);
       setSearchTerm('');
     }
   };
@@ -52,67 +75,51 @@ export const TriStateTagPicker: React.FC<TriStateTagPickerProps> = ({
     if (currentState === 'checked') {
       onRemoveTag(tag);
     } else {
-      // If 'dash' or 'unchecked', click adds it to all
       onAddTag(tag);
+      toast.success(`Tag "${tag}" applied to selected links.`);
     }
   };
 
   return (
-    <div className="w-56 p-2 bg-white rounded-lg shadow-lg border border-slate-200 dark:bg-slate-900 dark:border-slate-800 text-sm">
-      <div className="relative mb-2">
-        <input
-          type="text"
-          placeholder="Search"
+    <div className="w-56 p-2 bg-white rounded-md shadow-lg border border-slate-200/90 dark:bg-slate-900 dark:border-slate-800 text-sm">
+      <div className="mb-2">
+        <SearchInput
+          variant="minimal"
+          iconPosition="right"
+          maxLength={7}
+          placeholder="Search or add tag"
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(val) => {
+            const raw = val.slice(0, 7);
+            if (/[^a-zA-Z0-9_-]/.test(raw)) {
+              toast.warning('Tags can only contain letters, numbers, hyphens, and underscores.');
+            }
+            setSearchTerm(raw.replace(/[^a-zA-Z0-9_-]/g, ''));
+          }}
           onKeyDown={handleKeyDown}
-          className="w-full pl-2 pr-8 py-1.5 border-b border-slate-200 dark:border-slate-700 bg-transparent text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-[#2a5bd7] transition-colors"
           autoFocus
         />
-        <Search className="absolute right-2 top-2 h-4 w-4 text-slate-400" />
       </div>
 
-      <ul className="max-h-48 overflow-y-auto space-y-1">
+      <ul className="max-h-48 overflow-y-auto space-y-0.5">
         {isLoading ? (
-          <li className="px-2 py-1.5 text-slate-500">Loading...</li>
+          <li className="px-3 py-1.5 text-slate-500">Loading...</li>
         ) : filteredTags.length > 0 ? (
           filteredTags.map((tag) => {
             const state = tagStates[tag] || 'unchecked';
             return (
               <li
                 key={tag}
-                className="flex items-center gap-2 px-2 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-md cursor-pointer transition-colors"
+                className="flex items-center gap-2.5 px-3 py-1.5 sm:py-2 hover:bg-[#f4f6f8] dark:hover:bg-slate-800/80 rounded-md cursor-pointer transition-colors"
                 onClick={() => handleTagClick(tag)}
               >
-                <div
-                  className={`flex h-4 w-4 items-center justify-center rounded-sm border ${
-                    state === 'checked'
-                      ? 'bg-[#2a5bd7] border-[#2a5bd7] text-white'
-                      : state === 'dash'
-                      ? 'bg-[#2a5bd7] border-[#2a5bd7] text-white'
-                      : 'border-slate-300 bg-white dark:bg-transparent dark:border-slate-600'
-                  }`}
-                >
-                  {state === 'checked' && (
-                    <svg
-                      width="10"
-                      height="8"
-                      viewBox="0 0 10 8"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M1 4L3.5 6.5L9 1"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  )}
-                  {state === 'dash' && <Minus className="h-3 w-3" strokeWidth={3} />}
-                </div>
-                <span className="text-slate-700 dark:text-slate-200 truncate select-none">
+                <Checkbox
+                  checked={state === 'checked'}
+                  indeterminate={state === 'dash'}
+                  readOnly
+                  tabIndex={-1}
+                />
+                <span className="text-[#273144] dark:text-slate-200 font-medium truncate select-none">
                   {tag}
                 </span>
               </li>

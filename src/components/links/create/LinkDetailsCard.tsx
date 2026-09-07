@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ChevronUp, ChevronDown, Sparkles, X } from 'lucide-react';
+import { ChevronUp, ChevronDown, Sparkles, X, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 
 export interface LinkDetailsCardProps {
@@ -54,23 +54,22 @@ export const LinkDetailsCard: React.FC<LinkDetailsCardProps> = ({
       </div>
 
       {isOpen && (
-        <div className="space-y-5">
-          <p className="text-sm text-[#526281] dark:text-slate-400">
-            You have <strong className="font-bold text-[#273144] dark:text-slate-200">49 links</strong> and <strong className="font-bold text-[#273144] dark:text-slate-200">3 custom back-halves</strong> remaining this month.{' '}
-            <span className="text-[#2a5bd7] font-semibold underline cursor-pointer">Upgrade for more</span>.
-          </p>
-
-          {/* Destination URL */}
+        <div className="space-y-4 pt-1">
+          {/* Destination URL Field */}
           <div className="space-y-1.5">
-            <label htmlFor="destination-url" className="block text-sm font-bold text-[#273144] dark:text-slate-200">
-              Destination URL *
+            <label
+              htmlFor="destination-url"
+              className="text-sm font-bold text-[#273144] dark:text-slate-200"
+            >
+              Destination URL <span className="text-red-500">*</span>
             </label>
             <input
               id="destination-url"
-              type="text"
+              type="url"
+              required
+              placeholder="https://example.com/my-long-url"
               value={destinationUrl}
               onChange={(e) => onDestinationUrlChange(e.target.value)}
-              placeholder="https://example.com/my-long-url"
               className={cn(
                 'w-full h-11 rounded-lg border bg-white px-4 text-sm text-slate-900 shadow-2xs focus:border-[#2a5bd7] focus:ring-2 focus:ring-blue-100 focus:outline-hidden dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100',
                 errorUrl ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : 'border-slate-300'
@@ -83,7 +82,10 @@ export const LinkDetailsCard: React.FC<LinkDetailsCardProps> = ({
           {showDynamicBanner && (
             <div className="rounded-xl border border-blue-200/90 bg-blue-50/70 p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm dark:border-blue-900/60 dark:bg-blue-950/40">
               <div className="flex items-start sm:items-center gap-2 text-blue-950 dark:text-blue-200">
-                <span className="text-[#2a5bd7] font-bold shrink-0">⚡ New:</span>
+                <div className="flex items-center gap-1 text-[#2a5bd7] font-bold shrink-0">
+                  <Zap className="h-4 w-4 fill-current" />
+                  <span>New:</span>
+                </div>
                 <span>
                   <strong>Dynamic routing</strong> — send visitors to different URLs based on device or location.
                 </span>
@@ -179,7 +181,7 @@ export const LinkDetailsCard: React.FC<LinkDetailsCardProps> = ({
               type="text"
               value={tags}
               onChange={(e) => onTagsChange(e.target.value)}
-              placeholder="Select tags or type custom tags"
+              placeholder="e.g. promo, sale24 (max 10 tags, max 7 chars each)"
               className="w-full h-11 rounded-lg border border-slate-300 bg-white px-4 text-sm text-slate-900 shadow-2xs focus:border-[#2a5bd7] focus:outline-hidden dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
             />
           </div>

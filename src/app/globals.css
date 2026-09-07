@@ -1,19 +1,19 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: var(--font-inter), var(--font-roboto), system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-sans: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   --font-heading: var(--font-inter), sans-serif;
-  --font-body: var(--font-roboto), var(--font-inter), sans-serif;
+  --font-body: var(--font-inter), sans-serif;
 }
 
 @layer base {
   :root, body {
-    font-family: var(--font-inter), var(--font-roboto), system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     @apply antialiased bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100;
   }
 
   button, input, select, textarea {
-    font-family: var(--font-inter), var(--font-roboto), system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -26,7 +26,7 @@
 }
 
 .font-body {
-  font-family: var(--font-roboto), var(--font-inter), sans-serif;
+  font-family: var(--font-inter), sans-serif;
 }
 
 /* Custom Scrollbar */
@@ -55,3 +55,25 @@
 .dark ::-webkit-scrollbar-thumb:hover {
   background: #475569;
 }
+
+/* On mobile screens, hide visible scrollbar track so left and right padding/spacing are 100% equal */
+@media (max-width: 640px) {
+  main::-webkit-scrollbar {
+    display: none;
+    width: 0px;
+  }
+  main {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* Disable native browser search cancel button to prevent duplicate X icons */
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+  -webkit-appearance: none;
+  display: none;
+}
+

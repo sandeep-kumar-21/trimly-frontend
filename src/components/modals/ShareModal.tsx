@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { X, ChevronRight, ChevronLeft, Mail } from 'lucide-react';
+import { X, ChevronRight, ChevronLeft } from 'lucide-react';
 import { toast } from 'sonner';
+import { copyToClipboard } from '@/lib/utils/clipboard';
 
 export interface ShareModalProps {
   isOpen: boolean;
@@ -31,12 +32,14 @@ export const ShareModal: React.FC<ShareModalProps> = ({
   const displayShortLink = `trim.ly/${shortCode}`;
   const fullUrl = `https://${displayShortLink}`;
 
-  const handleCopy = () => {
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(fullUrl);
+  const handleCopy = async () => {
+    const success = await copyToClipboard(fullUrl);
+    if (success) {
       setCopied(true);
       toast.success('Link copied to clipboard!');
       setTimeout(() => setCopied(false), 2000);
+    } else {
+      toast.error('Failed to copy link');
     }
   };
 
@@ -79,32 +82,33 @@ export const ShareModal: React.FC<ShareModalProps> = ({
     {
       name: 'Instagram',
       color: '#E4405F',
-      action: () => {
-        navigator.clipboard.writeText(fullUrl);
-        toast.success('Link copied! Open Instagram to share.');
+      action: async () => {
+        await copyToClipboard(fullUrl);
+        toast.success('Link copied to clipboard! Opening Instagram...');
+        window.open('https://www.instagram.com/', '_blank', 'noopener,noreferrer');
       },
       icon: (
         <svg width="28" height="28" viewBox="0 0 48 48" fill="none">
-          <rect width="48" height="48" rx="12" fill="url(#ig-grad)" />
-          <path
-            d="M24 14C18.477 14 14 18.477 14 24C14 29.523 18.477 34 24 34C29.523 34 34 29.523 34 24C34 18.477 29.523 14 24 14ZM24 30.5C20.41 30.5 17.5 27.59 17.5 24C17.5 20.41 20.41 17.5 24 17.5C27.59 17.5 30.5 20.41 30.5 24C30.5 27.59 27.59 30.5 24 30.5ZM34.5 16C33.67 16 33 15.33 33 14.5C33 13.67 33.67 13 34.5 13C35.33 13 36 13.67 36 14.5C36 15.33 35.33 16 34.5 16Z"
-            fill="white"
-          />
           <defs>
-            <linearGradient id="ig-grad" x1="0" y1="48" x2="48" y2="0" gradientUnits="userSpaceOnUse">
+            <linearGradient id="ig-share-grad" x1="0" y1="48" x2="48" y2="0" gradientUnits="userSpaceOnUse">
               <stop stopColor="#FFC107" />
               <stop offset="0.3" stopColor="#F44336" />
               <stop offset="0.6" stopColor="#E91E63" />
               <stop offset="1" stopColor="#9C27B0" />
             </linearGradient>
           </defs>
+          <rect width="48" height="48" rx="12" fill="url(#ig-share-grad)" />
+          <path
+            d="M24 14C18.477 14 14 18.477 14 24C14 29.523 18.477 34 24 34C29.523 34 34 29.523 34 24C34 18.477 29.523 14 24 14ZM24 30.5C20.41 30.5 17.5 27.59 17.5 24C17.5 20.41 20.41 17.5 24 17.5C27.59 17.5 30.5 20.41 30.5 24C30.5 27.59 27.59 30.5 24 30.5ZM34.5 16C33.67 16 33 15.33 33 14.5C33 13.67 33.67 13 34.5 13C35.33 13 36 13.67 36 14.5C36 15.33 35.33 16 34.5 16Z"
+            fill="white"
+          />
         </svg>
       ),
     },
     {
       name: 'X',
       color: '#000000',
-      action: () => window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(fullUrl)}`, '_blank'),
+      action: () => window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(fullUrl)}&text=${encodeURIComponent(title)}`, '_blank', 'noopener,noreferrer'),
       icon: (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
           <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
@@ -113,14 +117,23 @@ export const ShareModal: React.FC<ShareModalProps> = ({
     },
     {
       name: 'Email',
-      color: '#4B5563',
-      action: () => window.open(`mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(fullUrl)}`, '_blank'),
-      icon: <Mail className="h-6 w-6 text-slate-700 dark:text-slate-200" />,
+      color: '#EA4335',
+      action: () => {
+        const mailtoUrl = `mailto:?subject=${encodeURIComponent(title || 'Check out this link')}&body=${encodeURIComponent(`Check out this link:\n${fullUrl}`)}`;
+        window.location.href = mailtoUrl;
+      },
+      icon: (
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+          <rect width="24" height="24" rx="6" fill="#EA4335" />
+          <path d="M4 7L12 13L20 7" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+          <rect x="4" y="6" width="16" height="12" rx="2" stroke="white" strokeWidth="1.8" />
+        </svg>
+      ),
     },
     {
       name: 'LinkedIn',
       color: '#0A66C2',
-      action: () => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(fullUrl)}`, '_blank'),
+      action: () => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(fullUrl)}`, '_blank', 'noopener,noreferrer'),
       icon: (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="#0A66C2">
           <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z" />
@@ -130,18 +143,18 @@ export const ShareModal: React.FC<ShareModalProps> = ({
   ];
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4 animate-in fade-in duration-150">
-      <div className="relative w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-3 sm:p-4 md:p-6 overflow-y-auto animate-in fade-in duration-150">
+      <div className="relative w-full max-w-md rounded-xl bg-white p-4.5 sm:p-6 shadow-2xl dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-4 sm:space-y-6 max-h-[calc(100vh-2rem)] overflow-y-auto my-auto">
         {/* Modal Header */}
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold tracking-tight text-[#273144] dark:text-slate-100">
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="text-lg sm:text-xl font-bold tracking-tight text-[#273144] dark:text-slate-100 truncate">
             Share your Trimly Link
           </h2>
           <button
             type="button"
             onClick={onClose}
             aria-label="Close modal"
-            className="rounded-full p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-200 transition-colors cursor-pointer"
+            className="rounded-full p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-200 transition-colors cursor-pointer shrink-0"
           >
             <X className="h-5 w-5" />
           </button>
@@ -153,27 +166,27 @@ export const ShareModal: React.FC<ShareModalProps> = ({
           <button
             type="button"
             onClick={() => handleScroll('left')}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 z-10 hidden group-hover:flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-md border border-slate-200 text-slate-600 hover:bg-slate-50 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200 cursor-pointer"
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 sm:-translate-x-3 z-10 hidden group-hover:flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full bg-white shadow-md border border-slate-200 text-slate-600 hover:bg-slate-50 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200 cursor-pointer"
           >
             <ChevronLeft className="h-4 w-4" />
           </button>
 
           <div
             ref={scrollRef}
-            className="flex items-center gap-3 overflow-x-auto scrollbar-none py-1 px-1 scroll-smooth"
+            className="flex items-center gap-2.5 sm:gap-3 overflow-x-auto scrollbar-none py-1 px-1 scroll-smooth"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
             {shareOptions.map((opt) => (
-              <div key={opt.name} className="flex flex-col items-center gap-2 shrink-0 w-16">
+              <div key={opt.name} className="flex flex-col items-center gap-1.5 sm:gap-2 shrink-0 w-14 sm:w-16">
                 <button
                   type="button"
                   onClick={opt.action}
                   aria-label={`Share via ${opt.name}`}
-                  className="flex h-16 w-16 items-center justify-center rounded-2xl border border-slate-200/90 bg-white shadow-2xs hover:shadow-md hover:border-slate-300 transition-all cursor-pointer dark:border-slate-800 dark:bg-slate-800"
+                  className="flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-xl border border-slate-200/90 bg-white shadow-2xs hover:shadow-md hover:border-slate-300 transition-all cursor-pointer dark:border-slate-800 dark:bg-slate-800"
                 >
                   {opt.icon}
                 </button>
-                <span className="text-xs font-semibold text-[#526281] dark:text-slate-300 truncate w-full text-center">
+                <span className="text-[11px] sm:text-xs font-semibold text-[#526281] dark:text-slate-300 truncate w-full text-center">
                   {opt.name}
                 </span>
               </div>
@@ -184,21 +197,21 @@ export const ShareModal: React.FC<ShareModalProps> = ({
           <button
             type="button"
             onClick={() => handleScroll('right')}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-md border border-slate-200 text-slate-600 hover:bg-slate-50 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200 cursor-pointer"
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 sm:translate-x-3 z-10 flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full bg-white shadow-md border border-slate-200 text-slate-600 hover:bg-slate-50 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200 cursor-pointer"
           >
             <ChevronRight className="h-4 w-4" />
           </button>
         </div>
 
         {/* Copy Link Input Bar */}
-        <div className="flex items-center justify-between rounded-xl border border-slate-300 bg-white p-2 dark:border-slate-700 dark:bg-slate-800">
-          <span className="pl-2 text-sm font-semibold text-[#273144] dark:text-slate-100 truncate">
+        <div className="flex items-center justify-between rounded-xl border border-slate-300 bg-white p-1.5 sm:p-2 dark:border-slate-700 dark:bg-slate-800 gap-2">
+          <span className="pl-2 text-xs sm:text-sm font-semibold text-[#273144] dark:text-slate-100 truncate min-w-0 flex-1">
             {displayShortLink}
           </span>
           <button
             type="button"
             onClick={handleCopy}
-            className={`h-9 px-4 rounded-lg font-bold text-sm transition-colors cursor-pointer shrink-0 ${
+            className={`h-8 sm:h-9 px-3.5 sm:px-4 rounded-md font-bold text-xs sm:text-sm transition-colors cursor-pointer shrink-0 ${
               copied
                 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300'
                 : 'bg-[#e8effe] text-[#2a5bd7] hover:bg-[#dbe7ff] dark:bg-slate-700 dark:text-blue-300'

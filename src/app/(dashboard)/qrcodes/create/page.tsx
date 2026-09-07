@@ -126,10 +126,7 @@ export default function CreateQrCodePage() {
           shortCode: codeParam,
           qrConfig,
         });
-        if (typeof window !== 'undefined') {
-          localStorage.setItem(`qr_created_${codeParam.toLowerCase()}`, 'true');
-        }
-        router.push(`/links/${codeParam}/details`);
+        router.replace(`/links/${codeParam}/details`);
       } else {
         // Formatting & creating new QR (with or without visible link) atomically
         let formattedUrl = destinationUrl.trim();
@@ -137,16 +134,12 @@ export default function CreateQrCodePage() {
           formattedUrl = `https://${formattedUrl}`;
         }
 
-        const qrRes = await createQrCodeMutation.mutateAsync({
+        await createQrCodeMutation.mutateAsync({
           longUrl: formattedUrl,
           title: title.trim() || undefined,
           createLink: alsoCreateLink,
           qrConfig,
         });
-
-        if (typeof window !== 'undefined' && qrRes?.qrCode?.shortCode) {
-          localStorage.setItem(`qr_created_${qrRes.qrCode.shortCode.toLowerCase()}`, 'true');
-        }
         router.push('/qrcodes');
       }
     } catch {
@@ -156,7 +149,7 @@ export default function CreateQrCodePage() {
   };
 
   return (
-    <div className="space-y-6 pb-6">
+    <div className="space-y-6">
       {/* Main 2-Column Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start relative">
         {/* Left Column: Form Cards (~7 Cols) */}

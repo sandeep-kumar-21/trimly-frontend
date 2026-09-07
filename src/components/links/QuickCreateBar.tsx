@@ -2,8 +2,9 @@
 
 import React, { useState } from 'react';
 import { useCreateLink } from '@/hooks/useCreateLink';
-import { HelpCircle, Palette, Layers } from 'lucide-react';
+import { HelpCircle, Palette, Layers, Lock } from 'lucide-react';
 import { LinkIcon, QrCodeIcon } from '@/components/icons/AppIcons';
+import { Checkbox } from '@/components/ui/Checkbox';
 import Link from 'next/link';
 
 import { useCreateQrCode } from '@/hooks/useQRCodes';
@@ -65,9 +66,9 @@ export const QuickCreateBar: React.FC = () => {
   };
 
   return (
-    <div className="space-y-5 w-full overflow-hidden">
+    <div className="space-y-4 sm:space-y-5 w-full overflow-hidden">
       {/* Switch Button (Exact Bitly Design - Smooth Sliding White Pill) */}
-      <div className="flex justify-center pb-2">
+      <div className="flex justify-center pb-1">
         <div className="relative inline-flex items-center gap-3 p-1">
           {/* Smooth Sliding White Pill Indicator */}
           <div
@@ -110,22 +111,22 @@ export const QuickCreateBar: React.FC = () => {
         {/* Left Column: Quick Create Form */}
         <div className="xl:col-span-7 2xl:col-span-8 min-w-0 space-y-4 flex flex-col justify-between">
           <div className="space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2">
               <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[#273144] dark:text-slate-100">
                 Quick create: {activeTab === 'link' ? 'Short link' : 'QR Code'}
               </h2>
-              <div className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-[#526281] dark:text-slate-400">
+              <div className="flex items-center gap-1.5 text-xs sm:text-sm font-normal text-[#526281] dark:text-slate-400">
                 {activeTab === 'link' ? (
                   <span>
-                    You can create <strong className="font-bold text-[#273144] dark:text-slate-100">50</strong> more links this month.
+                    You can create <strong className="font-semibold text-[#273144] dark:text-slate-100">50</strong> more links this month.
                   </span>
                 ) : (
                   <span>
-                    You can create <strong className="font-bold text-[#273144] dark:text-slate-100">2</strong> more QR Codes this month.
+                    You can create <strong className="font-semibold text-[#273144] dark:text-slate-100">2</strong> more QR Codes this month.
                   </span>
                 )}
-                <div className="group relative cursor-pointer">
-                  <HelpCircle className="h-4.5 w-4.5 text-slate-400" />
+                <div className="group relative cursor-pointer inline-flex items-center">
+                  <HelpCircle className="h-4 w-4 text-slate-400" />
                   <div className="absolute right-0 bottom-full mb-2 hidden w-60 rounded-md bg-slate-900 p-2.5 text-sm text-white shadow-lg group-hover:block z-20">
                     Your current plan includes monthly limits.{' '}
                     <Link href="/settings" className="text-blue-400 underline font-semibold">Upgrade for more</Link>.
@@ -135,19 +136,18 @@ export const QuickCreateBar: React.FC = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4 pt-1">
-              {/* Domain Field Simulator (Only visible on Short Link tab as in Bitly) */}
+              {/* Domain Field (Exact Bitly Design: "Domain: trim.ly 🔒") */}
               {activeTab === 'link' && (
-                <div className="flex items-center gap-2.5 text-sm">
+                <div className="flex items-center gap-1.5 text-sm">
                   <span className="text-[#526281] font-medium">Domain:</span>
-                  <div className="flex items-center gap-1.5 rounded-md border border-slate-200 bg-slate-50 px-3 py-1 text-sm font-bold text-[#273144] dark:border-slate-800 dark:bg-slate-800 dark:text-slate-200">
-                    trim.ly
-                  </div>
+                  <span className="font-bold text-[#273144] dark:text-slate-100">trim.ly</span>
+                  <Lock className="h-3.5 w-3.5 text-slate-500 inline-block ml-0.5" />
                 </div>
               )}
 
               {/* URL Input & Submit Button */}
               <div>
-                <label htmlFor="quick-create-input" className="block text-sm font-bold text-[#273144] dark:text-slate-200 mb-1.5">
+                <label htmlFor="quick-create-input" className="block text-sm font-bold text-[#273144] dark:text-slate-200 mb-2">
                   Enter your destination URL
                 </label>
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
@@ -157,12 +157,12 @@ export const QuickCreateBar: React.FC = () => {
                     placeholder="https://example.com/my-long-url"
                     value={url}
                     onChange={(e) => setUrl(e.target.value)}
-                    className="w-full min-w-0 flex-1 h-11 rounded-lg border border-slate-300 bg-white px-4 text-sm text-slate-900 shadow-2xs focus:border-[#2a5bd7] focus:outline-hidden dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 placeholder:text-slate-400"
+                    className="w-full min-w-0 flex-1 h-12 sm:h-10 min-h-[48px] sm:min-h-[40px] rounded-[4px] border border-slate-300 bg-white px-3 text-sm text-[#273144] shadow-2xs focus:border-[#2a5bd7] focus:outline-hidden dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 placeholder:text-slate-400 placeholder:font-normal font-normal"
                   />
                   <button
                     type="submit"
                     disabled={createLinkMutation.isPending}
-                    className="h-11 px-5 sm:px-6 text-sm font-bold rounded-lg bg-[#2a5bd7] text-white hover:bg-[#1a4bb7] transition-colors shadow-2xs disabled:opacity-50 whitespace-nowrap cursor-pointer shrink-0 w-full sm:w-auto"
+                    className="h-12 sm:h-10 min-h-[48px] sm:min-h-[40px] px-5 sm:px-4 text-sm font-bold rounded-[4px] bg-[#2a5bd7] text-white hover:bg-[#1a4bb7] transition-colors shadow-2xs disabled:opacity-50 whitespace-nowrap cursor-pointer shrink-0 w-full sm:w-auto"
                   >
                     {createLinkMutation.isPending
                       ? 'Creating...'
@@ -172,46 +172,46 @@ export const QuickCreateBar: React.FC = () => {
               </div>
 
               {/* Also Create Checkbox */}
-              <div className="flex items-center gap-2.5 pt-1">
-                <input
+              <div className="pt-1">
+                <Checkbox
                   id="qr-code-checkbox"
-                  type="checkbox"
                   checked={alsoCreateQr}
-                  onChange={(e) => setAlsoCreateQr(e.target.checked)}
-                  className="h-4 w-4 rounded-xs border-slate-300 text-[#2a5bd7] focus:ring-[#2a5bd7] cursor-pointer"
+                  onCheckedChange={setAlsoCreateQr}
+                  label={
+                    activeTab === 'link'
+                      ? 'Also create a QR Code for this link'
+                      : 'Also create a link for this QR Code'
+                  }
                 />
-                <label htmlFor="qr-code-checkbox" className="text-sm font-medium text-[#273144] dark:text-slate-300 cursor-pointer select-none">
-                  {activeTab === 'link'
-                    ? 'Also create a QR Code for this link'
-                    : 'Also create a link for this QR Code'}
-                </label>
               </div>
             </form>
           </div>
         </div>
 
         {/* Right Column: AI Assistant Card (Simplify your workflow) */}
-        <div className="xl:col-span-5 2xl:col-span-4 w-full rounded-xl border border-slate-200/50 bg-gradient-to-br from-[#edf7fc] via-[#f5eeea] to-[#fff4ec] p-5 shadow-2xs dark:border-slate-800 dark:from-slate-900 dark:via-purple-950/20 dark:to-slate-900 flex flex-col justify-between overflow-hidden">
-          <div className="space-y-3">
+        <div className="xl:col-span-5 2xl:col-span-4 w-full rounded-xl border border-slate-200/60 bg-gradient-to-br from-[#edf7fc] via-[#f5eeea] to-[#fff4ec] p-4 sm:p-5 shadow-2xs dark:border-slate-800 dark:from-slate-900 dark:via-purple-950/20 dark:to-slate-900 flex flex-col justify-between overflow-hidden">
+          <div className="space-y-2.5">
             {/* Header with Bitly exact Sparkles SVG gradient */}
-            <div className="flex items-center gap-2">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
-                <path d="M16.3636 7.27273L17.5 4.77273L20 3.63636L17.5 2.5L16.3636 0L15.2273 2.5L12.7273 3.63636L15.2273 4.77273L16.3636 7.27273ZM9.54545 7.72727L7.27273 2.72727L5 7.72727L0 10L5 12.2727L7.27273 17.2727L9.54545 12.2727L14.5455 10L9.54545 7.72727ZM16.3636 12.7273L15.2273 15.2273L12.7273 16.3636L15.2273 17.5L16.3636 20L17.5 17.5L20 16.3636L17.5 15.2273L16.3636 12.7273Z" fill="url(#ai_sparkles_grad)"></path>
-                <defs>
-                  <linearGradient id="ai_sparkles_grad" x1="0.182173" y1="0.181841" x2="19.8185" y2="19.8182" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#219ACD"></stop>
-                    <stop offset="0.5" stopColor="#A950A4"></stop>
-                    <stop offset="1" stopColor="#FF950A"></stop>
-                  </linearGradient>
-                </defs>
-              </svg>
-              <h3 className="text-base font-bold text-[#273144] dark:text-slate-100">Simplify your workflow</h3>
+            <div>
+              <div className="flex items-center gap-2">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
+                  <path d="M16.3636 7.27273L17.5 4.77273L20 3.63636L17.5 2.5L16.3636 0L15.2273 2.5L12.7273 3.63636L15.2273 4.77273L16.3636 7.27273ZM9.54545 7.72727L7.27273 2.72727L5 7.72727L0 10L5 12.2727L7.27273 17.2727L9.54545 12.2727L14.5455 10L9.54545 7.72727ZM16.3636 12.7273L15.2273 15.2273L12.7273 16.3636L15.2273 17.5L16.3636 20L17.5 17.5L20 16.3636L17.5 15.2273L16.3636 12.7273Z" fill="url(#ai_sparkles_grad)"></path>
+                  <defs>
+                    <linearGradient id="ai_sparkles_grad" x1="0.182173" y1="0.181841" x2="19.8185" y2="19.8182" gradientUnits="userSpaceOnUse">
+                      <stop stopColor="#219ACD"></stop>
+                      <stop offset="0.5" stopColor="#A950A4"></stop>
+                      <stop offset="1" stopColor="#FF950A"></stop>
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <h3 className="text-base font-bold text-[#273144] dark:text-slate-100">Simplify your workflow</h3>
+              </div>
+              <p className="text-xs text-[#526281] dark:text-slate-400 mt-0.5">
+                {activeTab === 'link'
+                  ? 'Explore smarter ways to create links.'
+                  : 'Explore smarter ways to create QR Codes.'}
+              </p>
             </div>
-            <p className="text-xs text-[#526281] dark:text-slate-400">
-              {activeTab === 'link'
-                ? 'Explore smarter ways to create links.'
-                : 'Explore smarter ways to create QR Codes.'}
-            </p>
 
             {/* Pill Buttons list matching Bitly exact size and icon SVGs */}
             <div className="flex flex-col sm:flex-row xl:flex-col flex-wrap gap-2 pt-1">

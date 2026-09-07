@@ -1,32 +1,32 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
+import { ChevronRight } from 'lucide-react';
 
 export const CampaignCreationHeader: React.FC = () => {
   return (
-    <div className="space-y-2">
-      {/* Stepper Steps */}
-      <div className="flex items-center gap-3 text-sm font-semibold">
-        <div className="flex items-center gap-2 text-[#2a5bd7]">
-          <span className="flex h-5 w-5 items-center justify-center rounded-full border-2 border-[#2a5bd7] text-[11px] font-bold">
-            1
-          </span>
-          <span>Configure campaign</span>
-        </div>
-        <div className="h-px w-12 bg-slate-300 dark:bg-slate-700" />
-        <div className="flex items-center gap-2 text-slate-400">
-          <span className="flex h-5 w-5 items-center justify-center rounded-full border-2 border-slate-300 text-[11px] font-bold">
-            2
-          </span>
-          <span>Organize channels & links</span>
-        </div>
-      </div>
+    <div className="space-y-1.5">
+      {/* Breadcrumb Navigation */}
+      <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs font-semibold text-slate-400 dark:text-slate-500">
+        <Link
+          href="/campaigns"
+          className="hover:text-[#2a5bd7] dark:hover:text-blue-400 transition-colors"
+        >
+          Campaigns
+        </Link>
+        <ChevronRight className="h-3.5 w-3.5" />
+        <span className="text-slate-700 dark:text-slate-300 font-bold">Create campaign</span>
+      </nav>
 
-      {/* Page Title */}
-      <div className="flex items-center justify-between gap-4">
+      {/* Page Title & Subtitle */}
+      <div>
         <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#273144] dark:text-slate-100">
-          Create a new Trimly Campaign
+          Create a new campaign
         </h1>
+        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+          Organize links into multi-channel marketing buckets and track unified click attribution.
+        </p>
       </div>
     </div>
   );

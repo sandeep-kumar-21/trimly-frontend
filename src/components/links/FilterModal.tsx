@@ -2,8 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { X, ChevronDown, Check, Search } from 'lucide-react';
+import { X, ChevronDown, Check } from 'lucide-react';
 import { useTags } from '@/hooks/useTags';
+import { SearchInput } from '@/components/ui/SearchInput';
+import { Checkbox } from '@/components/ui/Checkbox';
+import { cn } from '@/lib/utils/cn';
 
 export interface FilterState {
   tags: string[];
@@ -96,25 +99,25 @@ export const FilterModal: React.FC<FilterModalProps> = ({
   };
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 select-none">
-      {/* Backdrop */}
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 md:p-6 overflow-y-auto select-none">
+      {/* Backdrop (No blur) */}
       <div
-        className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
+        className="fixed inset-0 bg-slate-900/60 transition-opacity animate-in fade-in duration-200"
         onClick={onClose}
         aria-hidden="true"
       />
 
       {/* Modal Container */}
-      <div className="relative z-10 w-full max-w-lg rounded-xl bg-white p-6 sm:p-7 shadow-2xl border border-slate-200/80 dark:bg-slate-900 dark:border-slate-800 space-y-6 animate-in zoom-in-95 duration-200">
+      <div className="relative z-10 w-full max-w-lg rounded-xl bg-white p-4.5 sm:p-6 md:p-7 shadow-2xl border border-slate-200/80 dark:bg-slate-900 dark:border-slate-800 space-y-4 sm:space-y-6 animate-in zoom-in-95 duration-200 max-h-[calc(100vh-2rem)] overflow-y-auto my-auto">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
-          <h2 className="text-xl font-bold text-[#273144] dark:text-slate-100">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-3 sm:pb-4 dark:border-slate-800 gap-3">
+          <h2 className="text-lg sm:text-xl font-bold text-[#273144] dark:text-slate-100 truncate">
             Filters
           </h2>
           <button
             type="button"
             onClick={onClose}
-            className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 cursor-pointer"
+            className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 cursor-pointer shrink-0"
           >
             <X className="h-5 w-5" />
           </button>
@@ -141,7 +144,12 @@ export const FilterModal: React.FC<FilterModalProps> = ({
                     setIsTagsOpen(!isTagsOpen);
                   }
                 }}
-                className="flex min-h-11 w-full items-center justify-between rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-[#273144] shadow-2xs focus:border-[#2a5bd7] cursor-pointer dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                className={cn(
+                  'flex min-h-11 w-full items-center justify-between rounded-lg border bg-white px-3 py-1.5 text-sm font-medium text-[#273144] shadow-2xs cursor-pointer transition-colors dark:bg-slate-800 dark:text-slate-100',
+                  isTagsOpen
+                    ? 'border-slate-400 dark:border-slate-500'
+                    : 'border-slate-300 hover:border-slate-400 dark:border-slate-700'
+                )}
               >
                 <div className="flex flex-wrap items-center gap-1.5 max-w-[85%]">
                   {selectedTags.length > 0 ? (
@@ -166,43 +174,43 @@ export const FilterModal: React.FC<FilterModalProps> = ({
                   )}
                 </div>
                 <div className="flex items-center gap-2 border-l border-slate-200 pl-2 dark:border-slate-700">
-                  <ChevronDown className={`h-4 w-4 text-slate-400 transition-transform ${isTagsOpen ? 'rotate-180' : ''}`} />
+                  <ChevronDown className={cn('h-4 w-4 text-slate-400 transition-transform duration-200', isTagsOpen && 'rotate-180 text-slate-600 dark:text-slate-300')} />
                 </div>
               </div>
 
               {isTagsOpen && (
-                <div className="absolute left-0 top-full mt-1.5 w-full rounded-xl bg-white p-2.5 shadow-xl border border-slate-200 z-40 dark:bg-slate-900 dark:border-slate-800">
-                  <div className="relative mb-2">
-                    <input
-                      type="text"
+                <div className="absolute left-0 top-full mt-1.5 w-full rounded-md bg-white p-2 shadow-lg border border-slate-200/90 z-40 dark:bg-slate-900 dark:border-slate-800" onClick={(e) => e.stopPropagation()}>
+                  <div className="mb-2">
+                    <SearchInput
+                      size="sm"
                       placeholder="Search tags..."
                       value={tagSearchTerm}
-                      onChange={(e) => setTagSearchTerm(e.target.value)}
-                      className="w-full pl-8 pr-3 py-2 text-sm border border-slate-200 rounded-md bg-transparent text-[#273144] focus:outline-none focus:border-[#2a5bd7] dark:border-slate-700 dark:text-slate-200"
-                      onClick={(e) => e.stopPropagation()}
+                      onChange={setTagSearchTerm}
+                      autoFocus
                     />
-                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-400" />
                   </div>
                   
-                  <ul className="max-h-48 overflow-y-auto space-y-1 pr-1">
+                  <ul className="max-h-48 overflow-y-auto space-y-0.5 pr-1">
                     {tagsLoading ? (
-                      <li className="px-2 py-2 text-sm text-slate-500">Loading tags...</li>
+                      <li className="px-3 py-1.5 text-sm text-slate-500">Loading tags...</li>
                     ) : filteredTags.length > 0 ? (
                       filteredTags.map((tag) => (
                         <li key={tag}>
-                          <label className="flex items-center gap-3 px-2 py-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-md cursor-pointer transition-colors">
-                            <input
-                              type="checkbox"
+                          <div
+                            onClick={() => toggleTag(tag)}
+                            className="flex items-center gap-2.5 px-3 py-1.5 sm:py-2 hover:bg-[#f4f6f8] dark:hover:bg-slate-800/80 rounded-md cursor-pointer transition-colors"
+                          >
+                            <Checkbox
                               checked={selectedTags.includes(tag)}
-                              onChange={() => toggleTag(tag)}
-                              className="h-4 w-4 rounded-sm border-slate-300 text-[#2a5bd7] focus:ring-[#2a5bd7] cursor-pointer"
+                              readOnly
+                              tabIndex={-1}
                             />
-                            <span className="text-sm text-[#273144] dark:text-slate-200">{tag}</span>
-                          </label>
+                            <span className="text-sm font-medium text-[#273144] dark:text-slate-100">{tag}</span>
+                          </div>
                         </li>
                       ))
                     ) : (
-                      <li className="px-2 py-2 text-sm text-slate-500">No tags found.</li>
+                      <li className="px-3 py-1.5 text-sm text-slate-500">No tags found.</li>
                     )}
                   </ul>
                 </div>
@@ -222,7 +230,12 @@ export const FilterModal: React.FC<FilterModalProps> = ({
                 setIsTagsOpen(false);
                 setIsQrOpen(false);
               }}
-              className="flex h-11 w-full items-center justify-between rounded-lg border border-slate-300 bg-white px-3.5 text-sm font-medium text-[#273144] shadow-2xs focus:border-[#2a5bd7] cursor-pointer dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+              className={cn(
+                'flex h-11 w-full items-center justify-between rounded-lg border bg-white px-3.5 text-sm font-medium text-[#273144] shadow-2xs cursor-pointer transition-colors dark:bg-slate-800 dark:text-slate-100',
+                isLinkTypeOpen
+                  ? 'border-slate-400 dark:border-slate-500'
+                  : 'border-slate-300 hover:border-slate-400 dark:border-slate-700'
+              )}
             >
               <span>
                 {linkType === 'all'
@@ -232,22 +245,22 @@ export const FilterModal: React.FC<FilterModalProps> = ({
                     : 'Links without custom back-halves'}
               </span>
               <div className="flex items-center gap-2 border-l border-slate-200 pl-2.5 dark:border-slate-700">
-                <ChevronDown className="h-4 w-4 text-slate-500" />
+                <ChevronDown className={cn('h-4 w-4 text-slate-400 transition-transform duration-200', isLinkTypeOpen && 'rotate-180 text-slate-600 dark:text-slate-300')} />
               </div>
             </button>
 
             {isLinkTypeOpen && (
-              <div className="absolute left-0 top-full mt-1.5 w-full rounded-xl bg-white p-1.5 shadow-xl border border-slate-200 z-30 dark:bg-slate-900 dark:border-slate-800">
+              <div className="absolute left-0 top-full mt-1.5 w-full rounded-md bg-white py-1 shadow-lg border border-slate-200/90 z-30 dark:bg-slate-900 dark:border-slate-800 overflow-hidden">
                 <button
                   type="button"
                   onClick={() => {
                     setLinkType('all');
                     setIsLinkTypeOpen(false);
                   }}
-                  className="w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium text-[#273144] hover:bg-slate-50 rounded-lg dark:text-slate-200 dark:hover:bg-slate-800 cursor-pointer"
+                  className="w-full flex items-center justify-between gap-2.5 px-3.5 py-1.5 sm:py-2 text-sm font-medium text-[#273144] hover:bg-[#f4f6f8] dark:text-slate-100 dark:hover:bg-slate-800/80 cursor-pointer transition-colors text-left"
                 >
                   <span>All links</span>
-                  {linkType === 'all' && <Check className="h-4 w-4 text-[#2a5bd7]" />}
+                  {linkType === 'all' && <Check className="h-4 w-4 text-[#273144] dark:text-slate-100 stroke-[2] shrink-0" />}
                 </button>
                 <button
                   type="button"
@@ -255,10 +268,10 @@ export const FilterModal: React.FC<FilterModalProps> = ({
                     setLinkType('custom');
                     setIsLinkTypeOpen(false);
                   }}
-                  className="w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium text-[#273144] hover:bg-slate-50 rounded-lg dark:text-slate-200 dark:hover:bg-slate-800 cursor-pointer"
+                  className="w-full flex items-center justify-between gap-2.5 px-3.5 py-1.5 sm:py-2 text-sm font-medium text-[#273144] hover:bg-[#f4f6f8] dark:text-slate-100 dark:hover:bg-slate-800/80 cursor-pointer transition-colors text-left"
                 >
                   <span>Links with custom back-halves</span>
-                  {linkType === 'custom' && <Check className="h-4 w-4 text-[#2a5bd7]" />}
+                  {linkType === 'custom' && <Check className="h-4 w-4 text-[#273144] dark:text-slate-100 stroke-[2] shrink-0" />}
                 </button>
                 <button
                   type="button"
@@ -266,10 +279,10 @@ export const FilterModal: React.FC<FilterModalProps> = ({
                     setLinkType('no-custom');
                     setIsLinkTypeOpen(false);
                   }}
-                  className="w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium text-[#273144] hover:bg-slate-50 rounded-lg dark:text-slate-200 dark:hover:bg-slate-800 cursor-pointer"
+                  className="w-full flex items-center justify-between gap-2.5 px-3.5 py-1.5 sm:py-2 text-sm font-medium text-[#273144] hover:bg-[#f4f6f8] dark:text-slate-100 dark:hover:bg-slate-800/80 cursor-pointer transition-colors text-left"
                 >
                   <span>Links without custom back-halves</span>
-                  {linkType === 'no-custom' && <Check className="h-4 w-4 text-[#2a5bd7]" />}
+                  {linkType === 'no-custom' && <Check className="h-4 w-4 text-[#273144] dark:text-slate-100 stroke-[2] shrink-0" />}
                 </button>
               </div>
             )}
@@ -280,14 +293,14 @@ export const FilterModal: React.FC<FilterModalProps> = ({
             <span className="block text-sm font-bold text-[#273144] dark:text-slate-200">
               Link expiration
             </span>
-            <div className="flex items-center gap-6 pt-0.5">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-4 pt-0.5">
               <label className="inline-flex items-center gap-2 text-sm font-medium text-[#273144] dark:text-slate-300 cursor-pointer">
                 <input
                   type="radio"
                   name="link-expiration"
                   checked={expiration === 'expired'}
                   onChange={() => setExpiration('expired')}
-                  className="h-4 w-4 text-[#2a5bd7] focus:ring-[#2a5bd7] cursor-pointer"
+                  className="h-4 w-4 text-[#273144] focus:ring-[#273144] cursor-pointer"
                 />
                 Expired
               </label>
@@ -298,7 +311,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({
                   name="link-expiration"
                   checked={expiration === 'expiring'}
                   onChange={() => setExpiration('expiring')}
-                  className="h-4 w-4 text-[#2a5bd7] focus:ring-[#2a5bd7] cursor-pointer"
+                  className="h-4 w-4 text-[#273144] focus:ring-[#273144] cursor-pointer"
                 />
                 Expiring
               </label>
@@ -309,7 +322,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({
                   name="link-expiration"
                   checked={expiration === 'no_expiration'}
                   onChange={() => setExpiration('no_expiration')}
-                  className="h-4 w-4 text-[#2a5bd7] focus:ring-[#2a5bd7] cursor-pointer"
+                  className="h-4 w-4 text-[#273144] focus:ring-[#273144] cursor-pointer"
                 />
                 No expiration
               </label>
@@ -328,7 +341,12 @@ export const FilterModal: React.FC<FilterModalProps> = ({
                 setIsTagsOpen(false);
                 setIsLinkTypeOpen(false);
               }}
-              className="flex h-11 w-full items-center justify-between rounded-lg border border-slate-300 bg-white px-3.5 text-sm font-medium text-[#273144] shadow-2xs focus:border-[#2a5bd7] cursor-pointer dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+              className={cn(
+                'flex h-11 w-full items-center justify-between rounded-lg border bg-white px-3.5 text-sm font-medium text-[#273144] shadow-2xs cursor-pointer transition-colors dark:bg-slate-800 dark:text-slate-100',
+                isQrOpen
+                  ? 'border-slate-400 dark:border-slate-500'
+                  : 'border-slate-300 hover:border-slate-400 dark:border-slate-700'
+              )}
             >
               <span>
                 {qrCodeOption === 'all' ? (
@@ -346,24 +364,24 @@ export const FilterModal: React.FC<FilterModalProps> = ({
                 )}
               </span>
               <div className="flex items-center gap-2 border-l border-slate-200 pl-2.5 dark:border-slate-700">
-                <ChevronDown className="h-4 w-4 text-slate-500" />
+                <ChevronDown className={cn('h-4 w-4 text-slate-400 transition-transform duration-200', isQrOpen && 'rotate-180 text-slate-600 dark:text-slate-300')} />
               </div>
             </button>
 
             {isQrOpen && (
-              <div className="absolute left-0 top-full mt-1.5 w-full rounded-xl bg-white p-1.5 shadow-xl border border-slate-200 z-30 dark:bg-slate-900 dark:border-slate-800">
+              <div className="absolute left-0 top-full mt-1.5 w-full rounded-md bg-white py-1 shadow-lg border border-slate-200/90 z-30 dark:bg-slate-900 dark:border-slate-800 overflow-hidden">
                 <button
                   type="button"
                   onClick={() => {
                     setQrCodeOption('all');
                     setIsQrOpen(false);
                   }}
-                  className="w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium text-[#273144] hover:bg-slate-50 rounded-lg dark:text-slate-200 dark:hover:bg-slate-800 cursor-pointer"
+                  className="w-full flex items-center justify-between gap-2.5 px-3.5 py-1.5 sm:py-2 text-sm font-medium text-[#273144] hover:bg-[#f4f6f8] dark:text-slate-100 dark:hover:bg-slate-800/80 cursor-pointer transition-colors text-left"
                 >
                   <span>
                     Links <strong>with or without</strong> attached QR Codes
                   </span>
-                  {qrCodeOption === 'all' && <Check className="h-4 w-4 text-[#2a5bd7]" />}
+                  {qrCodeOption === 'all' && <Check className="h-4 w-4 text-[#273144] dark:text-slate-100 stroke-[2] shrink-0" />}
                 </button>
                 <button
                   type="button"
@@ -371,12 +389,12 @@ export const FilterModal: React.FC<FilterModalProps> = ({
                     setQrCodeOption('with_qr');
                     setIsQrOpen(false);
                   }}
-                  className="w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium text-[#273144] hover:bg-slate-50 rounded-lg dark:text-slate-200 dark:hover:bg-slate-800 cursor-pointer"
+                  className="w-full flex items-center justify-between gap-2.5 px-3.5 py-1.5 sm:py-2 text-sm font-medium text-[#273144] hover:bg-[#f4f6f8] dark:text-slate-100 dark:hover:bg-slate-800/80 cursor-pointer transition-colors text-left"
                 >
                   <span>
                     Links <strong>with</strong> attached QR Codes only
                   </span>
-                  {qrCodeOption === 'with_qr' && <Check className="h-4 w-4 text-[#2a5bd7]" />}
+                  {qrCodeOption === 'with_qr' && <Check className="h-4 w-4 text-[#273144] dark:text-slate-100 stroke-[2] shrink-0" />}
                 </button>
                 <button
                   type="button"
@@ -384,12 +402,12 @@ export const FilterModal: React.FC<FilterModalProps> = ({
                     setQrCodeOption('without_qr');
                     setIsQrOpen(false);
                   }}
-                  className="w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium text-[#273144] hover:bg-slate-50 rounded-lg dark:text-slate-200 dark:hover:bg-slate-800 cursor-pointer"
+                  className="w-full flex items-center justify-between gap-2.5 px-3.5 py-1.5 sm:py-2 text-sm font-medium text-[#273144] hover:bg-[#f4f6f8] dark:text-slate-100 dark:hover:bg-slate-800/80 cursor-pointer transition-colors text-left"
                 >
                   <span>
                     Links <strong>without</strong> attached QR Codes only
                   </span>
-                  {qrCodeOption === 'without_qr' && <Check className="h-4 w-4 text-[#2a5bd7]" />}
+                  {qrCodeOption === 'without_qr' && <Check className="h-4 w-4 text-[#273144] dark:text-slate-100 stroke-[2] shrink-0" />}
                 </button>
               </div>
             )}
@@ -397,28 +415,28 @@ export const FilterModal: React.FC<FilterModalProps> = ({
         </div>
 
         {/* Footer Buttons (Bitly Exact Parity) */}
-        <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
+        <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
           <button
             type="button"
             onClick={handleClearAll}
-            className="flex items-center gap-1.5 text-sm font-semibold text-[#273144] hover:text-[#2a5bd7] cursor-pointer dark:text-slate-300 dark:hover:text-blue-400"
+            className="flex items-center justify-center sm:justify-start gap-1.5 text-sm font-semibold text-[#273144] hover:text-[#2a5bd7] cursor-pointer dark:text-slate-300 dark:hover:text-blue-400 py-1"
           >
             <X className="h-4 w-4 text-slate-500" />
             Clear all filters
           </button>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center justify-end gap-3">
             <button
               type="button"
               onClick={onClose}
-              className="h-10 px-5 rounded-lg border border-slate-200 bg-white text-sm font-semibold text-[#273144] hover:bg-slate-50 transition-colors cursor-pointer dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+              className="h-10 px-5 flex-1 sm:flex-initial rounded-md border border-slate-200 bg-white text-sm font-semibold text-[#273144] hover:bg-slate-50 transition-colors cursor-pointer dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
             >
               Cancel
             </button>
             <button
               type="button"
               onClick={handleApply}
-              className="h-10 px-6 rounded-lg bg-[#2a5bd7] text-white text-sm font-bold hover:bg-[#1a4bb7] transition-colors shadow-2xs cursor-pointer"
+              className="h-10 px-6 flex-1 sm:flex-initial rounded-md bg-[#2a5bd7] text-white text-sm font-bold hover:bg-[#1a4bb7] transition-colors shadow-2xs cursor-pointer"
             >
               Apply
             </button>

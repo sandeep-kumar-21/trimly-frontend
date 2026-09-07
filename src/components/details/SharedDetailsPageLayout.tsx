@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import dynamic from 'next/dynamic';
 import { useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { linksApi } from '@/lib/api/links.api';
@@ -11,27 +10,16 @@ import { SharedDetailsInfoCard } from '@/components/details/SharedDetailsInfoCar
 import { SharedDetailsSharingCard } from '@/components/details/SharedDetailsSharingCard';
 import { SharedDynamicRoutingCard } from '@/components/details/SharedDynamicRoutingCard';
 import { useLinkAnalytics } from '@/hooks/useLinkAnalytics';
+import { useAnalyticsStore } from '@/store/useAnalyticsStore';
 
-// Dynamically import heavy analytics components to prevent blocking route transition
-const ClicksLineChart = dynamic(
-  () => import('@/components/analytics/ClicksLineChart').then((m) => m.ClicksLineChart),
-  { ssr: false, loading: () => <div className="h-64 rounded-xl border border-slate-200/80 bg-white p-6 dark:border-slate-800 dark:bg-slate-900 animate-pulse" /> }
-);
-
-const ReferrerBreakdown = dynamic(
-  () => import('@/components/analytics/ReferrerBreakdown').then((m) => m.ReferrerBreakdown),
-  { ssr: false, loading: () => <div className="h-48 rounded-xl border border-slate-200/80 bg-white p-6 dark:border-slate-800 dark:bg-slate-900 animate-pulse" /> }
-);
-
-const DeviceBreakdown = dynamic(
-  () => import('@/components/analytics/DeviceBreakdown').then((m) => m.DeviceBreakdown),
-  { ssr: false, loading: () => <div className="h-48 rounded-xl border border-slate-200/80 bg-white p-6 dark:border-slate-800 dark:bg-slate-900 animate-pulse" /> }
-);
-
-const CountryBreakdown = dynamic(
-  () => import('@/components/analytics/CountryBreakdown').then((m) => m.CountryBreakdown),
-  { ssr: false, loading: () => <div className="h-48 rounded-xl border border-slate-200/80 bg-white p-6 dark:border-slate-800 dark:bg-slate-900 animate-pulse" /> }
-);
+import { AnalyticsFilterBar } from '@/components/analytics/AnalyticsFilterBar';
+import { TopMetricsCards } from '@/components/analytics/TopMetricsCards';
+import { ClicksLineChart } from '@/components/analytics/ClicksLineChart';
+import { ReferrerBreakdown } from '@/components/analytics/ReferrerBreakdown';
+import { DeviceBreakdown } from '@/components/analytics/DeviceBreakdown';
+import { CountryBreakdown } from '@/components/analytics/CountryBreakdown';
+import { OsBreakdown } from '@/components/analytics/OsBreakdown';
+import { UtmBreakdown } from '@/components/analytics/UtmBreakdown';
 
 export interface SharedDetailsPageLayoutProps {
   type: 'link' | 'qrcode';
@@ -39,17 +27,24 @@ export interface SharedDetailsPageLayoutProps {
 
 export const SharedDetailsPageLayout: React.FC<SharedDetailsPageLayoutProps> = ({ type }) => {
   const params = useParams();
-  const code = (params?.code as string) || '45MM1F1';
+  const code = (params?.code as string) || '';
   const isQrMode = type === 'qrcode';
 
-  const { data: analytics } = useLinkAnalytics(code);
+  const { datePreset, customFrom, customTo } = useAnalyticsStore();
+
+  const { data: analytics, isLoading: isAnalyticsLoading } = useLinkAnalytics(code, {
+    preset: datePreset,
+    from: customFrom || undefined,
+    to: customTo || undefined,
+  });
+
   const { data: link } = useQuery({
     queryKey: ['link', code],
     queryFn: () => linksApi.getLinkByCode(code),
     enabled: !!code,
   });
 
-  const destinationUrl = link?.longUrl || analytics?.longUrl || '';
+  const destinationUrl = link?.longUrl || '';
   const shortUrl = link?.shortUrl;
 
   const rawDomain = destinationUrl
@@ -64,9 +59,16 @@ export const SharedDetailsPageLayout: React.FC<SharedDetailsPageLayoutProps> = (
 
   const title = link?.title || (isQrMode ? `Untitled ${code}` : `${rawDomain} – untitled`);
   const createdOn = link?.createdAt ? formatDate(link.createdAt) : 'Recently';
+  const totalClicks = analytics?.summary?.totalClicks ?? 0;
+
+  const hasUtmData = Boolean(
+    (analytics?.utms?.sources && analytics.utms.sources.length > 0) ||
+    (analytics?.utms?.mediums && analytics.utms.mediums.length > 0) ||
+    (analytics?.utms?.campaigns && analytics.utms.campaigns.length > 0)
+  );
 
   return (
-    <div className="w-full space-y-6 pb-16">
+    <div className="w-full space-y-6">
       {/* 1. Details Title Bar */}
       <SharedDetailsTitleBar
         type={type}
@@ -86,6 +88,7 @@ export const SharedDetailsPageLayout: React.FC<SharedDetailsPageLayoutProps> = (
             type={type}
             shortCode={code}
             destinationUrl={destinationUrl}
+            shortUrl={shortUrl}
             createdOn={createdOn}
             tags={link?.tags || []}
             visibleAsLink={link?.visibleAsLink}
@@ -99,38 +102,79 @@ export const SharedDetailsPageLayout: React.FC<SharedDetailsPageLayoutProps> = (
             shortCode={code}
             destinationUrl={destinationUrl}
             shortUrl={shortUrl}
+            hasQR={link?.hasQR}
           />
         </div>
       </div>
 
-      {/* 3. Dynamic Routing Banner */}
+      {/* 3. Dynamic Routing Banner (Bitly-style feature placeholder) */}
       <SharedDynamicRoutingCard />
 
-      {/* 4. Analytics Section - Dynamically loaded for instant navigation */}
-      <div className="space-y-6">
-        <ClicksLineChart
-          data={analytics?.clicksByDate || analytics?.byDate}
-          title={isQrMode ? 'Scans over time' : 'Engagements over time'}
-          subtitle={isQrMode ? 'Total QR code scans compared to previous period' : 'Total link engagements compared to previous period'}
+      {/* 4. Complete Analytics Engine for this specific Link or QR Code */}
+      <div className="space-y-6 pt-2">
+        {/* Filter Bar (Date Presets, Compare Toggle, CSV Export) */}
+        <AnalyticsFilterBar
+          analyticsData={analytics}
+          isLoading={isAnalyticsLoading}
+          hideScopeSelector={true}
+          scopeLabel={isQrMode ? `QR Code Telemetry (trim.ly/${code})` : `Link Telemetry (trim.ly/${code})`}
         />
 
+        {/* Executive KPI Scorecards */}
+        <TopMetricsCards summary={analytics?.summary} isLoading={isAnalyticsLoading} />
+
+        {/* Engagements / Scans Over Time Chart */}
+        <ClicksLineChart
+          data={analytics?.timeSeries}
+          title={isQrMode ? 'Scans over time' : 'Engagements over time'}
+          subtitle={
+            isQrMode
+              ? 'Total QR code scans compared to previous period'
+              : 'Total link engagements compared to previous period'
+          }
+          isLoading={isAnalyticsLoading}
+        />
+
+        {/* Row: Traffic Sources & Device Distribution */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <ReferrerBreakdown
-            data={analytics?.referrers || analytics?.byReferrer || []}
-            totalClicks={analytics?.totalClicks}
+            data={analytics?.referrers}
+            totalClicks={totalClicks}
+            isLoading={isAnalyticsLoading}
           />
           <DeviceBreakdown
-            data={analytics?.devices || []}
-            totalClicks={analytics?.totalClicks || 0}
+            data={analytics?.platforms?.devices}
+            totalClicks={totalClicks}
+            isLoading={isAnalyticsLoading}
           />
         </div>
 
-        <div>
+        {/* Row: Geographic Intelligence & Platform/OS Intelligence */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <CountryBreakdown
-            data={analytics?.countries || []}
-            totalClicks={analytics?.totalClicks || 0}
+            countries={analytics?.locations?.countries}
+            cities={analytics?.locations?.cities}
+            totalClicks={totalClicks}
+            isLoading={isAnalyticsLoading}
+          />
+          <OsBreakdown
+            osData={analytics?.platforms?.os}
+            browserData={analytics?.platforms?.browsers}
+            totalClicks={totalClicks}
+            isLoading={isAnalyticsLoading}
           />
         </div>
+
+        {/* Row: Inbound UTM Campaign Tracking (Only shown when UTM tags are detected) */}
+        {hasUtmData && (
+          <UtmBreakdown
+            sources={analytics?.utms?.sources}
+            mediums={analytics?.utms?.mediums}
+            campaigns={analytics?.utms?.campaigns}
+            totalClicks={totalClicks}
+            isLoading={isAnalyticsLoading}
+          />
+        )}
       </div>
     </div>
   );

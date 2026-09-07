@@ -7,7 +7,6 @@ import { createCampaignSchema, CreateCampaignFormData } from '@/lib/validators/c
 import { Modal } from '@/components/ui/Modal';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
-import { FolderPlus, FolderGit2 } from 'lucide-react';
 
 interface CreateCampaignModalProps {
   isOpen: boolean;
@@ -57,7 +56,6 @@ export const CreateCampaignModal: React.FC<CreateCampaignModalProps> = ({
           label="Campaign Name *"
           type="text"
           placeholder="e.g. Summer Sale 2026, Q3 Launch, Black Friday"
-          leftIcon={<FolderGit2 className="h-4 w-4" />}
           error={errors.name?.message}
           {...register('name')}
         />
@@ -71,7 +69,6 @@ export const CreateCampaignModal: React.FC<CreateCampaignModalProps> = ({
             variant="primary"
             size="md"
             isLoading={isLoading}
-            leftIcon={<FolderPlus className="h-4 w-4" />}
             className="font-semibold"
           >
             Create campaign

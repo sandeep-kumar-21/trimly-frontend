@@ -25,7 +25,7 @@ export const SharedPageHeader: React.FC<SharedPageHeaderProps> = ({
         <Link
           href={createHref}
           onClick={onCreateClick}
-          className="h-10 px-5 rounded-lg bg-[#2a5bd7] text-white text-sm font-bold hover:bg-[#1a4bb7] transition-colors shadow-2xs cursor-pointer flex items-center justify-center"
+          className="h-10 px-5 rounded-md bg-[#2a5bd7] text-white text-sm font-bold hover:bg-[#1a4bb7] transition-colors shadow-2xs cursor-pointer flex items-center justify-center"
         >
           {createButtonText}
         </Link>
@@ -33,7 +33,7 @@ export const SharedPageHeader: React.FC<SharedPageHeaderProps> = ({
         <button
           type="button"
           onClick={onCreateClick}
-          className="h-10 px-5 rounded-lg bg-[#2a5bd7] text-white font-bold text-sm hover:bg-[#1a4bb7] transition-colors shadow-2xs cursor-pointer flex items-center justify-center"
+          className="h-10 px-5 rounded-md bg-[#2a5bd7] text-white font-bold text-sm hover:bg-[#1a4bb7] transition-colors shadow-2xs cursor-pointer flex items-center justify-center"
         >
           {createButtonText}
         </button>

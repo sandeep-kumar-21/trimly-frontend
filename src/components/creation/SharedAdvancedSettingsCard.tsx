@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { ChevronUp, ChevronDown, Clock, GitFork, Code2, Plus, Trash2, GripVertical } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import { CustomSelect } from '@/components/ui/CustomSelect';
+import { ToggleSwitch } from '@/components/ui/ToggleSwitch';
 
 export interface RoutingRule {
   id: string;
@@ -348,19 +349,11 @@ export const SharedAdvancedSettingsCard: React.FC<SharedAdvancedSettingsCardProp
               </span>
             </div>
 
-            <button
-              type="button"
-              role="switch"
-              aria-checked={utmEnabled}
-              onClick={() => setUtmEnabled(!utmEnabled)}
-              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden ${utmEnabled ? 'bg-[#2a5bd7]' : 'bg-slate-200 dark:bg-slate-700'
-                }`}
-            >
-              <span
-                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${utmEnabled ? 'translate-x-5' : 'translate-x-0'
-                  }`}
-              />
-            </button>
+            <ToggleSwitch
+              checked={utmEnabled}
+              onChange={setUtmEnabled}
+              aria-label="Toggle UTM parameters"
+            />
           </div>
 
           <hr className="border-slate-100 dark:border-slate-800" />
@@ -374,19 +367,11 @@ export const SharedAdvancedSettingsCard: React.FC<SharedAdvancedSettingsCardProp
               </span>
             </div>
 
-            <button
-              type="button"
-              role="switch"
-              aria-checked={expirationEnabled}
-              onClick={() => setExpirationEnabled(!expirationEnabled)}
-              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden ${expirationEnabled ? 'bg-[#2a5bd7]' : 'bg-slate-200 dark:bg-slate-700'
-                }`}
-            >
-              <span
-                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${expirationEnabled ? 'translate-x-5' : 'translate-x-0'
-                  }`}
-              />
-            </button>
+            <ToggleSwitch
+              checked={expirationEnabled}
+              onChange={setExpirationEnabled}
+              aria-label="Toggle expiration"
+            />
           </div>
 
           <hr className="border-slate-100 dark:border-slate-800" />
@@ -401,19 +386,11 @@ export const SharedAdvancedSettingsCard: React.FC<SharedAdvancedSettingsCardProp
                 </span>
               </div>
 
-              <button
-                type="button"
-                role="switch"
-                aria-checked={dynamicRoutingEnabled}
-                onClick={() => handleToggleDynamicRouting(!dynamicRoutingEnabled)}
-                className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden ${dynamicRoutingEnabled ? 'bg-[#2a5bd7]' : 'bg-slate-200 dark:bg-slate-700'
-                  }`}
-              >
-                <span
-                  className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${dynamicRoutingEnabled ? 'translate-x-5' : 'translate-x-0'
-                    }`}
-                />
-              </button>
+              <ToggleSwitch
+                checked={dynamicRoutingEnabled}
+                onChange={handleToggleDynamicRouting}
+                aria-label="Toggle dynamic routing"
+              />
             </div>
 
             <p className="text-xs text-[#526281] leading-relaxed dark:text-slate-400">
@@ -595,7 +572,7 @@ export const SharedAdvancedSettingsCard: React.FC<SharedAdvancedSettingsCardProp
                   <button
                     type="button"
                     onClick={() => handleToggleDynamicRouting(false)}
-                    className="h-10 px-5 rounded-lg border border-slate-300 bg-white text-sm font-bold text-[#273144] hover:bg-slate-50 transition-colors cursor-pointer dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+                    className="h-10 px-5 rounded-md border border-slate-300 bg-white text-sm font-bold text-[#273144] hover:bg-slate-50 transition-colors cursor-pointer dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
                   >
                     Cancel
                   </button>
@@ -605,7 +582,7 @@ export const SharedAdvancedSettingsCard: React.FC<SharedAdvancedSettingsCardProp
                     onClick={() =>
                       alert('Dynamic routing rules saved successfully!')
                     }
-                    className="h-10 px-5 rounded-lg bg-[#2a5bd7] text-white text-sm font-bold hover:bg-[#1a4bb7] transition-colors shadow-2xs cursor-pointer disabled:bg-[#a6c1f7] disabled:opacity-70 disabled:cursor-not-allowed dark:disabled:bg-slate-800 dark:disabled:text-slate-500"
+                    className="h-10 px-5 rounded-md bg-[#2a5bd7] text-white text-sm font-bold hover:bg-[#1a4bb7] transition-colors shadow-2xs cursor-pointer disabled:bg-[#a6c1f7] disabled:opacity-70 disabled:cursor-not-allowed dark:disabled:bg-slate-800 dark:disabled:text-slate-500"
                   >
                     Save dynamic routing
                   </button>

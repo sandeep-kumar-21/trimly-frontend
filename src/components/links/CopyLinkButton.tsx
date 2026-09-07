@@ -5,6 +5,7 @@ import { Copy, Check } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils/cn';
+import { copyToClipboard } from '@/lib/utils/clipboard';
 
 export interface CopyLinkButtonProps {
   url: string;
@@ -25,12 +26,12 @@ export const CopyLinkButton: React.FC<CopyLinkButtonProps> = ({
 
   const handleCopy = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    try {
-      await navigator.clipboard.writeText(url);
+    const success = await copyToClipboard(url);
+    if (success) {
       setCopied(true);
       toast.success('Link copied to clipboard!', { description: url });
       setTimeout(() => setCopied(false), 2000);
-    } catch {
+    } else {
       toast.error('Failed to copy link');
     }
   };

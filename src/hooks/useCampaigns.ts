@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { campaignsApi, UpdateCampaignPayload } from '@/lib/api/campaigns.api';
-import { Campaign, CreateCampaignPayload } from '@/types/campaign.types';
+import { campaignsApi } from '@/lib/api/campaigns.api';
+import { Campaign, CreateCampaignPayload, UpdateCampaignPayload } from '@/types/campaign.types';
 import { toast } from 'sonner';
 
 export function useCampaigns() {
@@ -9,20 +9,25 @@ export function useCampaigns() {
   const {
     data: campaigns = [],
     isLoading,
+    isFetching,
+    isFetched,
     isError,
     error,
     refetch,
   } = useQuery<Campaign[]>({
     queryKey: ['campaigns'],
     queryFn: () => campaignsApi.getUserCampaigns(),
-    staleTime: 1000 * 30,
+    staleTime: 1000 * 10,
+    refetchInterval: 20000,
+    refetchOnWindowFocus: true,
   });
 
   const createMutation = useMutation({
     mutationFn: (payload: CreateCampaignPayload) => campaignsApi.createCampaign(payload),
     onSuccess: (newCampaign) => {
-      queryClient.setQueryData<Campaign[]>(['campaigns'], (old = []) => [newCampaign, ...old]);
+      queryClient.setQueriesData<Campaign[]>({ queryKey: ['campaigns'] }, (old = []) => [newCampaign, ...old]);
       queryClient.invalidateQueries({ queryKey: ['campaigns'] });
+      queryClient.invalidateQueries({ queryKey: ['campaign-channels'] });
       toast.success('Campaign created!', {
         description: `Campaign "${newCampaign.name}" created successfully.`,
       });
@@ -38,6 +43,7 @@ export function useCampaigns() {
       campaignsApi.updateCampaign(id, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['campaigns'] });
+      queryClient.invalidateQueries({ queryKey: ['campaign-channels'] });
       toast.success('Campaign updated successfully');
     },
     onError: (err: any) => {
@@ -51,6 +57,7 @@ export function useCampaigns() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['campaigns'] });
       queryClient.invalidateQueries({ queryKey: ['links'] });
+      queryClient.invalidateQueries({ queryKey: ['campaign-channels'] });
       toast.success('Campaign deleted successfully');
     },
     onError: (err: any) => {
@@ -62,6 +69,8 @@ export function useCampaigns() {
   return {
     campaigns,
     isLoading,
+    isFetching,
+    isFetched,
     isError,
     error,
     refetch,

@@ -3,6 +3,7 @@
 import React from 'react';
 import { ImagePlus, Plus, AlertTriangle } from 'lucide-react';
 import { checkQrContrast } from '@/lib/utils/qrContrastValidator';
+import { ToggleSwitch } from '@/components/ui/ToggleSwitch';
 
 export interface QrCustomizerState {
   pattern: string;
@@ -301,17 +302,11 @@ export const QrCustomizerCard: React.FC<QrCustomizerCardProps> = ({
           </p>
 
           <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={() => updateState('useQrColorForCorners', !customizerState.useQrColorForCorners)}
-              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${customizerState.useQrColorForCorners ? 'bg-[#2a5bd7]' : 'bg-slate-200 dark:bg-slate-700'
-                }`}
-            >
-              <span
-                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md transition duration-200 ease-in-out ${customizerState.useQrColorForCorners ? 'translate-x-5' : 'translate-x-0'
-                  }`}
-              />
-            </button>
+            <ToggleSwitch
+              checked={customizerState.useQrColorForCorners}
+              onChange={(checked) => updateState('useQrColorForCorners', checked)}
+              aria-label="Use QR Code color for corners"
+            />
             <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
               Use QR Code color
             </span>

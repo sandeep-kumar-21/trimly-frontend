@@ -1,83 +1,177 @@
 'use client';
 
 import React from 'react';
-import { Calendar, MapPin } from 'lucide-react';
+import { AnalyticsSummary } from '@/types/analytics.types';
 import { formatNumber } from '@/lib/utils/formatNumber';
-import { formatDate } from '@/lib/utils/formatDate';
+import { QrCodeIcon, LinkIcon } from '@/components/icons/AppIcons';
+import {
+  TrendingUp,
+  TrendingDown,
+  Users,
+  MousePointerClick,
+  Globe,
+  Share2,
+  Award,
+} from 'lucide-react';
 
 export interface TopMetricsCardsProps {
-  topDay?: { date: string; count: number } | null;
-  topCountry?: { name: string; count: number } | null;
+  summary?: AnalyticsSummary;
+  isLoading?: boolean;
 }
 
-const COUNTRY_FLAGS: Record<string, { name: string; flag: string }> = {
-  IN: { name: 'India', flag: '🇮🇳' },
-  US: { name: 'United States', flag: '🇺🇸' },
-  GB: { name: 'United Kingdom', flag: '🇬🇧' },
-  CA: { name: 'Canada', flag: '🇨🇦' },
-  AU: { name: 'Australia', flag: '🇦🇺' },
-  DE: { name: 'Germany', flag: '🇩🇪' },
-  FR: { name: 'France', flag: '🇫🇷' },
-  ES: { name: 'Spain', flag: '🇪🇸' },
-};
+export const TopMetricsCards: React.FC<TopMetricsCardsProps> = ({
+  summary,
+  isLoading,
+}) => {
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {[1, 2, 3, 4].map((i) => (
+          <div
+            key={i}
+            className="h-32 animate-pulse rounded-xl border border-slate-200/80 bg-slate-100 dark:border-slate-800 dark:bg-slate-800/60"
+          />
+        ))}
+      </div>
+    );
+  }
 
-export const TopMetricsCards: React.FC<TopMetricsCardsProps> = ({ topDay, topCountry }) => {
-  const dayStr = topDay?.date ? formatDate(topDay.date) : 'No recent traffic';
-  const dayCount = topDay?.count || 0;
+  const totalClicks = summary?.totalClicks ?? 0;
+  const clicksGrowth = summary?.clicksGrowth ?? 0;
+  const uniqueVisitors = summary?.uniqueVisitors ?? 0;
+  const uniqueGrowth = summary?.uniqueGrowth ?? 0;
+  const qrScans = summary?.qrScans ?? 0;
+  const qrPercentage = summary?.qrPercentage ?? 0;
+  const topCountry = summary?.topCountry || 'Global';
+  const topReferrer = summary?.topReferrer || 'Direct / None';
+  const topLink = summary?.topLink;
 
-  const countryKey = topCountry?.name ? topCountry.name.toUpperCase() : 'IN';
-  const countryInfo = COUNTRY_FLAGS[countryKey] || {
-    name: topCountry?.name || 'India',
-    flag: '🇮🇳',
-  };
-  const countryCount = topCountry?.count || 0;
+  const uniquenessRatio =
+    totalClicks > 0 ? Math.round((uniqueVisitors / totalClicks) * 100) : 100;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {/* Top Day Card */}
-      <div className="rounded-xl border border-slate-200/80 bg-white p-6 shadow-2xs dark:border-slate-800 dark:bg-slate-900 space-y-3">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* 1. Total Engagements */}
+      <div className="group relative rounded-xl border border-slate-200/80 bg-white p-5 shadow-2xs transition-all hover:border-slate-300 hover:shadow-sm dark:border-slate-800 dark:bg-slate-900 flex flex-col justify-between">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-            <Calendar className="h-4 w-4 text-blue-600" />
-            <span>Top day by engagements</span>
+          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+            Total Engagements
+          </span>
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+            <MousePointerClick className="h-4 w-4" />
           </div>
         </div>
 
-        <div>
-          <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
-            {dayStr}
-          </h3>
-          <div className="mt-1 flex items-baseline gap-2">
-            <span className="text-xl font-bold text-blue-600 dark:text-blue-400">
-              {formatNumber(dayCount)}
+        <div className="mt-3">
+          <div className="text-2xl sm:text-3xl font-bold tracking-tight text-[#273144] dark:text-slate-100">
+            {formatNumber(totalClicks)}
+          </div>
+
+          <div className="mt-2 flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+            <span className="inline-flex items-center gap-1 font-semibold text-slate-700 dark:text-slate-200">
+              {clicksGrowth >= 0 ? (
+                <TrendingUp className="h-3.5 w-3.5 text-slate-500 dark:text-slate-400" />
+              ) : (
+                <TrendingDown className="h-3.5 w-3.5 text-slate-500 dark:text-slate-400" />
+              )}
+              {clicksGrowth >= 0 ? `+${clicksGrowth}%` : `${clicksGrowth}%`}
             </span>
-            <span className="text-sm font-semibold text-slate-500">engagements</span>
+            <span>vs prior period</span>
           </div>
         </div>
       </div>
 
-      {/* Top Location Card */}
-      <div className="rounded-xl border border-slate-200/80 bg-white p-6 shadow-2xs dark:border-slate-800 dark:bg-slate-900 space-y-3">
+      {/* 2. Unique Visitors */}
+      <div className="group relative rounded-xl border border-slate-200/80 bg-white p-5 shadow-2xs transition-all hover:border-slate-300 hover:shadow-sm dark:border-slate-800 dark:bg-slate-900 flex flex-col justify-between">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-            <MapPin className="h-4 w-4 text-emerald-600" />
-            <span>Top location by engagements</span>
+          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+            Unique Audience
+          </span>
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+            <Users className="h-4 w-4" />
           </div>
         </div>
 
-        <div>
-          <h3 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <span className="text-2xl">{countryInfo.flag}</span>
-            <span>{countryInfo.name}</span>
-          </h3>
-          <div className="mt-1 flex items-baseline gap-2">
-            <span className="text-xl font-bold text-emerald-600 dark:text-emerald-400">
-              {formatNumber(countryCount)}
+        <div className="mt-3">
+          <div className="text-2xl sm:text-3xl font-bold tracking-tight text-[#273144] dark:text-slate-100">
+            {formatNumber(uniqueVisitors)}
+          </div>
+
+          <div className="mt-2 flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+            <span className="inline-flex items-center gap-1 font-semibold text-slate-700 dark:text-slate-200">
+              {uniqueGrowth >= 0 ? (
+                <TrendingUp className="h-3.5 w-3.5 text-slate-500 dark:text-slate-400" />
+              ) : (
+                <TrendingDown className="h-3.5 w-3.5 text-slate-500 dark:text-slate-400" />
+              )}
+              {uniqueGrowth >= 0 ? `+${uniqueGrowth}%` : `${uniqueGrowth}%`}
             </span>
-            <span className="text-sm font-semibold text-slate-500">engagements</span>
+            <span>·</span>
+            <span>{uniquenessRatio}% unique rate</span>
+          </div>
+        </div>
+      </div>
+
+      {/* 3. QR Scans vs Direct Clicks */}
+      <div className="group relative rounded-xl border border-slate-200/80 bg-white p-5 shadow-2xs transition-all hover:border-slate-300 hover:shadow-sm dark:border-slate-800 dark:bg-slate-900 flex flex-col justify-between">
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+            QR Scans vs Web
+          </span>
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+            <QrCodeIcon className="h-4 w-4" />
+          </div>
+        </div>
+
+        <div className="mt-3">
+          <div className="flex items-baseline justify-between">
+            <span className="text-2xl sm:text-3xl font-bold tracking-tight text-[#273144] dark:text-slate-100">
+              {formatNumber(qrScans)}
+            </span>
+            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+              {qrPercentage}% scans
+            </span>
+          </div>
+
+          {/* Progress bar */}
+          <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+            <div
+              className="h-full rounded-full bg-[#2a5bd7] transition-all duration-500"
+              style={{ width: `${qrPercentage}%` }}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* 4. Top Performing Asset / Location */}
+      <div className="group relative rounded-xl border border-slate-200/80 bg-white p-5 shadow-2xs transition-all hover:border-slate-300 hover:shadow-sm dark:border-slate-800 dark:bg-slate-900 flex flex-col justify-between">
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+            Top Performing Driver
+          </span>
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+            {topLink ? <LinkIcon className="h-4 w-4" /> : <Award className="h-4 w-4" />}
+          </div>
+        </div>
+
+        <div className="mt-3">
+          <div className="text-base sm:text-lg font-bold text-[#273144] dark:text-slate-100 truncate">
+            {topLink ? topLink.title || `trim.ly/${topLink.shortCode}` : topReferrer}
+          </div>
+
+          <div className="mt-1 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+            <span className="truncate text-slate-500">
+              {topLink ? `trim.ly/${topLink.shortCode}` : `Top geo: ${topCountry}`}
+            </span>
+            {topLink && (
+              <span className="font-semibold text-[#2a5bd7] dark:text-blue-400">
+                {topLink.percentage}% share
+              </span>
+            )}
           </div>
         </div>
       </div>
     </div>
   );
 };
+

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { toast } from 'sonner';
+import { Input } from '@/components/ui/Input';
 
 interface ProfileSecuritySectionProps {
   emailAddress: string;
@@ -51,46 +52,31 @@ export const ProfileSecuritySection: React.FC<ProfileSecuritySectionProps> = () 
           </p>
         </div>
 
-        <div>
-          <label className="block text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
-            Current password
-          </label>
-          <input
-            type="password"
-            value={currentPassword}
-            onChange={(e) => setCurrentPassword(e.target.value)}
-            className="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm font-medium text-slate-900 shadow-2xs dark:border-slate-700 dark:bg-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-blue-600"
-          />
-        </div>
+        <Input
+          label="Current password"
+          type="password"
+          value={currentPassword}
+          onChange={(e) => setCurrentPassword(e.target.value)}
+        />
 
-        <div>
-          <label className="block text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
-            New password
-          </label>
-          <input
-            type="password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            className="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm font-medium text-slate-900 shadow-2xs dark:border-slate-700 dark:bg-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-blue-600"
-          />
-        </div>
+        <Input
+          label="New password"
+          type="password"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+        />
 
-        <div>
-          <label className="block text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
-            Confirm new password
-          </label>
-          <input
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            className="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm font-medium text-slate-900 shadow-2xs dark:border-slate-700 dark:bg-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-blue-600"
-          />
-        </div>
+        <Input
+          label="Confirm new password"
+          type="password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+        />
 
         <button
           type="submit"
           disabled={isChangingPassword}
-          className="rounded-md bg-[#0c3ebb] px-4 py-2 text-sm font-bold text-white hover:bg-[#092e8c] disabled:opacity-60 transition-colors shadow-2xs cursor-pointer"
+          className="h-10 px-5 rounded-md bg-[#2a5bd7] text-xs sm:text-sm font-bold text-white hover:bg-[#1a4bb7] disabled:opacity-60 transition-colors shadow-2xs cursor-pointer"
         >
           {isChangingPassword ? 'Changing password...' : 'Change password'}
         </button>

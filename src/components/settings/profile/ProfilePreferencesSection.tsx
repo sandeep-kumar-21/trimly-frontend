@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { CheckCircle2, AlertCircle } from 'lucide-react';
 import { formatDate } from '@/lib/utils/formatDate';
+import { Input } from '@/components/ui/Input';
 import { toast } from 'sonner';
 
 interface ProfilePreferencesSectionProps {
@@ -59,22 +60,17 @@ export const ProfilePreferencesSection: React.FC<ProfilePreferencesSectionProps>
       </div>
 
       {/* Display Name Form */}
-      <form onSubmit={handleUpdateDisplayName} className="space-y-3 pt-2">
-        <div>
-          <label className="block text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
-            Display name
-          </label>
-          <input
-            type="text"
-            value={displayName}
-            onChange={(e) => setDisplayName(e.target.value)}
-            className="w-full max-w-xl rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm font-medium text-slate-900 shadow-2xs dark:border-slate-700 dark:bg-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-blue-600"
-          />
-        </div>
+      <form onSubmit={handleUpdateDisplayName} className="space-y-3 pt-2 max-w-xl">
+        <Input
+          label="Display name"
+          type="text"
+          value={displayName}
+          onChange={(e) => setDisplayName(e.target.value)}
+        />
         <button
           type="submit"
           disabled={isUpdatingName || !displayName.trim()}
-          className="rounded-md bg-[#e2e8f0] px-4 py-2 text-sm font-bold text-slate-600 hover:bg-slate-300 disabled:opacity-60 transition-colors dark:bg-slate-800 dark:text-slate-300 cursor-pointer"
+          className="h-10 px-4 rounded-md bg-[#e2e8f0] text-xs sm:text-sm font-bold text-slate-700 hover:bg-slate-300 disabled:opacity-60 transition-colors dark:bg-slate-800 dark:text-slate-200 cursor-pointer shadow-2xs"
         >
           {isUpdatingName ? 'Updating...' : 'Update display name'}
         </button>
@@ -87,38 +83,38 @@ export const ProfilePreferencesSection: React.FC<ProfilePreferencesSectionProps>
         </h3>
 
         {/* Email Table */}
-        <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 max-w-4xl">
-          <table className="w-full text-left text-sm">
-            <thead className="border-b border-slate-200 bg-slate-50 text-sm font-bold uppercase tracking-wider text-slate-500 dark:border-slate-800 dark:bg-slate-800/50 dark:text-slate-400">
+        <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 max-w-xl shadow-2xs">
+          <table className="w-full text-left text-xs sm:text-sm">
+            <thead className="border-b border-slate-200 bg-slate-50/80 text-xs font-bold uppercase tracking-wider text-slate-500 dark:border-slate-800 dark:bg-slate-800/50 dark:text-slate-400">
               <tr>
-                <th className="px-4 py-3">Email address</th>
-                <th className="px-4 py-3">Status</th>
+                <th className="px-3.5 sm:px-4 py-3 font-bold">Email address</th>
+                <th className="px-3.5 sm:px-4 py-3 font-bold text-right sm:text-left">Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
               <tr>
-                <td className="px-4 py-3 font-semibold text-slate-800 dark:text-slate-200">
+                <td className="px-3.5 sm:px-4 py-3 font-semibold text-slate-800 dark:text-slate-200 truncate max-w-[180px] sm:max-w-none">
                   {emailAddress}
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-3.5 sm:px-4 py-3 text-right sm:text-left">
                   {isVerified ? (
-                    <span className="inline-flex items-center gap-1.5 text-sm font-bold text-emerald-600">
+                    <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-emerald-600">
                       <CheckCircle2 className="h-4 w-4" />
-                      Verified
+                      <span>Verified</span>
                     </span>
                   ) : (
-                    <div className="flex items-center gap-3">
-                      <span className="inline-flex items-center gap-1.5 text-sm font-bold text-amber-600 dark:text-amber-400">
+                    <div className="flex items-center justify-end sm:justify-start gap-2.5">
+                      <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-amber-600 dark:text-amber-400">
                         <AlertCircle className="h-4 w-4" />
-                        Not verified
+                        <span>Not verified</span>
                       </span>
                       <button
                         type="button"
                         onClick={handleVerifyEmail}
                         disabled={isSendingVerification}
-                        className="rounded-md bg-blue-600 px-3 py-1 text-xs font-bold text-white hover:bg-blue-700 disabled:opacity-60 transition-colors shadow-2xs cursor-pointer"
+                        className="rounded-md bg-[#2a5bd7] px-2.5 py-1 text-xs font-bold text-white hover:bg-[#1d4cc9] disabled:opacity-60 transition-colors shadow-2xs cursor-pointer shrink-0"
                       >
-                        {isSendingVerification ? 'Sending...' : 'Verify email'}
+                        {isSendingVerification ? 'Sending...' : 'Verify'}
                       </button>
                     </div>
                   )}

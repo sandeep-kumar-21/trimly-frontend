@@ -15,10 +15,10 @@ export const ProfileSettingsTab: React.FC = () => {
   const isVerified = user?.isVerified ?? true;
 
   return (
-    <div className="space-y-8 animate-fadeIn max-w-3xl pb-24">
+    <div className="space-y-8 animate-fadeIn max-w-3xl">
       {/* Page Title */}
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-[#273144] dark:text-white">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#273144] dark:text-white">
           Settings
         </h1>
       </div>

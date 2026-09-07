@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { ChevronUp, ChevronDown } from 'lucide-react';
 import { LinkIcon, QrCodeIcon } from '@/components/icons/AppIcons';
+import { ToggleSwitch } from '@/components/ui/ToggleSwitch';
 
 export interface SharedSharingOptionsCardProps {
   mode: 'link' | 'qrcode';
@@ -60,20 +61,12 @@ export const SharedSharingOptionsCard: React.FC<SharedSharingOptionsCardProps> =
               </div>
             </div>
 
-            {/* Custom Toggle Switch */}
-            <button
-              type="button"
-              role="switch"
-              aria-checked={toggleValue}
-              onClick={() => onToggleChange(!toggleValue)}
-              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden ${toggleValue ? 'bg-[#2a5bd7]' : 'bg-slate-200 dark:bg-slate-700'
-                }`}
-            >
-              <span
-                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out ${toggleValue ? 'translate-x-5' : 'translate-x-0'
-                  }`}
-              />
-            </button>
+            {/* Canonical Toggle Switch */}
+            <ToggleSwitch
+              checked={toggleValue}
+              onChange={onToggleChange}
+              aria-label={isLinkMode ? 'Generate a QR Code' : 'Create a link'}
+            />
           </div>
         </div>
       )}

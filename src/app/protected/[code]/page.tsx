@@ -36,9 +36,9 @@ export default function ProtectedLinkPage() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl space-y-6">
+      <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-xl p-8 shadow-2xl space-y-6">
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 shadow-inner">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/20 shadow-inner">
             <Lock className="w-7 h-7" />
           </div>
           <h1 className="text-2xl font-bold text-white tracking-tight">
@@ -67,7 +67,7 @@ export default function ProtectedLinkPage() {
               placeholder="Enter password..."
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="bg-slate-950 border-slate-800 focus:border-indigo-500 text-white"
+              className="bg-slate-950 border-slate-800 focus:border-[#2a5bd7] text-white"
               autoFocus
               required
             />
@@ -76,7 +76,7 @@ export default function ProtectedLinkPage() {
           <Button
             type="submit"
             disabled={verifyMutation.isPending || !password.trim()}
-            className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2.5 rounded-xl transition-all shadow-lg shadow-indigo-600/20 flex items-center justify-center gap-2"
+            className="w-full bg-[#2a5bd7] hover:bg-[#1d4cc9] text-white font-bold py-2.5 rounded-md transition-all shadow-lg shadow-blue-600/20 flex items-center justify-center gap-2 cursor-pointer"
           >
             {verifyMutation.isPending ? (
               <>

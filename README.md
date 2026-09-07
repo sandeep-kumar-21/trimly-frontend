@@ -69,9 +69,13 @@ Trimly is designed around **four core pillars**:
 - **Multi-Format Export Engine**: One-click downloads for vector **SVG**, high-resolution **PNG** (1000x1000px), or white-padded **JPEG**.
 - **Promote Standalone QRs to Links**: One-click action to promote standalone QR codes into visible dashboard links without recreating target URLs.
 
-### 📁 Marketing Campaigns & Attribution
-- **2-Column Campaign Creation Studio**: Live preview card reacting in real time to name inputs, selected distribution channels, and initial link targets.
-- **Channel-Level Performance Breakdown**: Group links across channels (`email`, `social`, `sms`, `ads`, `other`) and visualize click attribution per channel.
+### 📁 Marketing Campaigns & Multi-Channel Attribution
+- **Dedicated Campaign Creation Studio (`/campaigns/create`)**: Immersive 2-column builder layout featuring real-time input synchronization and auto-collapsing sidebar for maximum workspace canvas.
+- **Interactive Live Laptop Mockup**: Live desktop preview reacting instantly to campaign titles, channel selections, and destination URLs with dynamic channel brand dots and in-mockup scrolling.
+- **Smart "All Channels" Batch Generation**: Auto-generates multi-channel short links with automatic UTM parameters (`utm_source={channel}&utm_medium=campaign&utm_campaign={name}`) in one click.
+- **Multi-Select Inline Card Assignment**: Sleek multi-select drawers within channel cards enabling fast, batch assignment with selection counters, "Clear selection" shortcuts, and batch safety caps.
+- **Dynamic Channel Theming & Badges**: Channel cards dynamically theme according to channel types (Social &rarr; Indigo, Email &rarr; Sky Blue, SMS &rarr; Emerald, Paid &rarr; Amber, YouTube &rarr; Red, LinkedIn &rarr; Blue) with dynamic top-performer badges and gold trophy highlights.
+- **Safe Unlinking Architecture**: Campaign deletion safely unlinks associated short links without deleting them, keeping live links active in the wild.
 
 ### 📈 Visual Analytics & Insights
 - **Interactive Time-Series Charts**: Smooth area/line charts built with Recharts displaying daily engagement over 7d/30d/90d windows.

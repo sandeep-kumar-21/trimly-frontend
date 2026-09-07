@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useLinks } from '@/hooks/useLinks';
 import { TableSkeleton } from '@/components/shared/LoadingSkeleton';
 import { useUIStore } from '@/store/uiStore';
@@ -11,14 +11,19 @@ import { LinksHeader } from '@/components/links/LinksHeader';
 import { LinksSearchBar } from '@/components/links/LinksSearchBar';
 import { LinkSelectionBar } from '@/components/links/LinkSelectionBar';
 import { LinksPagePromoBanner } from '@/components/links/LinksPagePromoBanner';
-import { LinksPageFooter } from '@/components/links/LinksPageFooter';
-import { EmptyLinksState } from '@/components/links/EmptyLinksState';
+import { NoResultsFound } from '@/components/shared/NoResultsFound';
+import { Pagination } from '@/components/ui/Pagination';
+import { useRouter } from 'next/navigation';
 
 export default function LinksPage() {
+  const router = useRouter();
   const [activeTags, setActiveTags] = useState<string[]>([]);
-  const { links, isLoading, isError, refetch } = useLinks(activeTags);
+  const { links, isLoading: linksLoading, isFetched: linksFetched, isError, refetch } = useLinks(activeTags);
   const openCreateModal = useUIStore((state) => state.openCreateModal);
 
+  const isLoading = linksLoading || !linksFetched;
+
+  const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<'compact' | 'default' | 'grid'>('default');
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -38,6 +43,12 @@ export default function LinksPage() {
     qrCodeOption: 'all',
   });
 
+  useEffect(() => {
+    if (!isLoading && !isError && links.length === 0) {
+      router.replace('/links/new');
+    }
+  }, [isLoading, isError, links.length, router]);
+
   const appliedFiltersCount = useMemo(() => {
     let count = 0;
     if (filterState.tags.length > 0) count += filterState.tags.length;
@@ -51,6 +62,20 @@ export default function LinksPage() {
     const updated = activeTags.filter(tag => tag !== tagToRemove);
     setActiveTags(updated);
     setFilterState(prev => ({ ...prev, tags: updated }));
+    setCurrentPage(1);
+  };
+
+  const handleClearAllFilters = () => {
+    setDateFilter(null);
+    setActiveTags([]);
+    setSearchQuery('');
+    setFilterState({
+      tags: [],
+      linkType: 'all',
+      expiration: null,
+      qrCodeOption: 'all',
+    });
+    setCurrentPage(1);
   };
 
   const filteredLinks = useMemo(() => {
@@ -102,6 +127,14 @@ export default function LinksPage() {
     });
   }, [links, searchQuery, statusFilter, activeTags, dateFilter, filterState]);
 
+  const PAGE_SIZE = 10;
+  const totalPages = Math.ceil(filteredLinks.length / PAGE_SIZE);
+
+  const paginatedLinks = useMemo(() => {
+    const start = (currentPage - 1) * PAGE_SIZE;
+    return filteredLinks.slice(start, start + PAGE_SIZE);
+  }, [filteredLinks, currentPage]);
+
   const handleToggleSelect = (id: string) => {
     setSelectedIds((prev) =>
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
@@ -123,6 +156,10 @@ export default function LinksPage() {
     });
   }, [selectedIds, links]);
 
+  if (!isLoading && links.length === 0) {
+    return <TableSkeleton rows={5} />;
+  }
+
   return (
     <div className="space-y-6">
       {/* 1. Header Component */}
@@ -131,22 +168,16 @@ export default function LinksPage() {
       {/* 2. Search & Filter Bar Component */}
       <LinksSearchBar
         searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
+        onSearchChange={(q) => {
+          setSearchQuery(q);
+          setCurrentPage(1);
+        }}
         onOpenDateModal={() => setIsDateModalOpen(true)}
         onOpenFilterModal={() => setIsFilterModalOpen(true)}
         dateFilterLabel={dateFilter?.label}
         appliedFiltersCount={appliedFiltersCount}
         totalResults={filteredLinks.length}
-        onClearAll={() => {
-          setDateFilter(null);
-          setActiveTags([]);
-          setFilterState({
-            tags: [],
-            linkType: 'all',
-            expiration: null,
-            qrCodeOption: 'all',
-          });
-        }}
+        onClearAll={handleClearAllFilters}
       />
 
       {/* Divider */}
@@ -165,10 +196,11 @@ export default function LinksPage() {
         onStatusFilterChange={(newStatus) => {
           setStatusFilter(newStatus);
           setSelectedIds([]);
+          setCurrentPage(1);
         }}
       />
 
-      {/* 4. Main Link List or Skeletons or Empty States */}
+      {/* 4. Main Link List or Skeletons or Filter Empty State */}
       {isLoading ? (
         <TableSkeleton rows={5} />
       ) : isError ? (
@@ -182,24 +214,46 @@ export default function LinksPage() {
           </button>
         </div>
       ) : filteredLinks.length === 0 ? (
-        <EmptyLinksState />
+        <NoResultsFound
+          itemType="links"
+          statusFilter={statusFilter}
+          onClearFilters={handleClearAllFilters}
+          onSwitchToActive={() => {
+            setStatusFilter('active');
+            setSelectedIds([]);
+            setCurrentPage(1);
+          }}
+        />
       ) : (
-        <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 gap-4' : 'space-y-4'}>
-          {filteredLinks.map((link) => (
-            <LinkCard
-              key={link._id || link.shortCode}
-              link={link}
-              isSelected={selectedIds.includes(link._id || link.shortCode)}
-              onToggleSelect={() => handleToggleSelect(link._id || link.shortCode)}
-              viewMode={viewMode}
-            />
-          ))}
-        </div>
-      )}
+        <>
+          {currentPage === 1 && <LinksPagePromoBanner />}
 
-      {/* Promo Banner & Footer */}
-      <LinksPagePromoBanner />
-      <LinksPageFooter />
+          <div className={viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4' : 'space-y-4'}>
+            {paginatedLinks.map((link) => (
+              <LinkCard
+                key={link._id || link.shortCode}
+                link={link}
+                isSelected={selectedIds.includes(link._id || link.shortCode)}
+                onToggleSelect={() => handleToggleSelect(link._id || link.shortCode)}
+                viewMode={viewMode}
+              />
+            ))}
+          </div>
+
+          {/* Pagination Controls (10 cards per page) */}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={filteredLinks.length}
+            pageSize={PAGE_SIZE}
+            onPageChange={(p) => {
+              setCurrentPage(p);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            itemLabel="links"
+          />
+        </>
+      )}
 
       {/* Modals */}
       <FilterModal

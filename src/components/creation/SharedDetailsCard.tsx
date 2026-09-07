@@ -166,7 +166,7 @@ export const SharedDetailsCard: React.FC<SharedDetailsCardProps> = ({
               </div>
 
               <div className="sm:col-span-6 space-y-1.5">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between gap-2 flex-wrap sm:flex-nowrap">
                   <label htmlFor="back-half-input" className="block text-sm font-bold text-[#273144] dark:text-slate-200">
                     Back-half <span className="font-normal text-slate-400">(optional)</span>
                   </label>
@@ -233,7 +233,7 @@ export const SharedDetailsCard: React.FC<SharedDetailsCardProps> = ({
                 type="text"
                 value={tags}
                 onChange={(e) => onTagsChange(e.target.value)}
-                placeholder="Select tags or type custom tags"
+                placeholder="e.g. promo, sale24 (max 10 tags, max 7 chars each)"
                 className="w-full h-11 rounded-lg border border-slate-300 bg-white px-4 text-sm text-slate-900 shadow-2xs focus:border-[#2a5bd7] focus:outline-hidden dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
               />
             ) : (

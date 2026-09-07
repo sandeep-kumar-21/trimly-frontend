@@ -56,7 +56,7 @@ export const LinkCardActions: React.FC<LinkCardActionsProps> = ({ link }) => {
         <button
           type="button"
           onClick={() => setIsShareModalOpen(true)}
-          className="p-1.5 rounded-lg text-[#273144] hover:bg-slate-100 hover:text-[#2a5bd7] dark:text-slate-200 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+          className="p-1.5 rounded-md text-[#273144] hover:bg-slate-100 hover:text-[#2a5bd7] dark:text-slate-200 dark:hover:bg-slate-800 transition-colors cursor-pointer"
           title="Share link"
         >
           <Share2 className="h-4.5 w-4.5" />
@@ -66,7 +66,7 @@ export const LinkCardActions: React.FC<LinkCardActionsProps> = ({ link }) => {
           <button
             type="button"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+            className={`p-1.5 rounded-md transition-colors cursor-pointer ${
               isMenuOpen
                 ? 'text-[#2a5bd7] bg-blue-50 dark:bg-blue-950/50 dark:text-blue-400 font-bold'
                 : 'text-[#273144] hover:bg-slate-100 hover:text-[#2a5bd7] dark:text-slate-200 dark:hover:bg-slate-800'
@@ -84,7 +84,7 @@ export const LinkCardActions: React.FC<LinkCardActionsProps> = ({ link }) => {
                   setIsMenuOpen(false);
                   router.push(`/links/${link.shortCode}/details`);
                 }}
-                className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-semibold text-[#273144] hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800/60 transition-colors cursor-pointer"
+                className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm font-semibold text-[#273144] hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800/60 transition-colors cursor-pointer"
               >
                 <ExternalLink className="h-4.5 w-4.5 shrink-0" />
                 <span>View link details</span>
@@ -96,7 +96,7 @@ export const LinkCardActions: React.FC<LinkCardActionsProps> = ({ link }) => {
                   setIsMenuOpen(false);
                   router.push(`/qrcodes/create?code=${link.shortCode}`);
                 }}
-                className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-semibold text-[#273144] hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800/60 transition-colors cursor-pointer"
+                className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm font-semibold text-[#273144] hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800/60 transition-colors cursor-pointer"
               >
                 <QrCodeIcon className="h-4.5 w-4.5 shrink-0" />
                 <span>Customize QR Code</span>
@@ -108,7 +108,7 @@ export const LinkCardActions: React.FC<LinkCardActionsProps> = ({ link }) => {
                   setIsMenuOpen(false);
                   setIsHideModalOpen(true);
                 }}
-                className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-semibold text-[#273144] hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800/60 transition-colors cursor-pointer"
+                className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm font-semibold text-[#273144] hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800/60 transition-colors cursor-pointer"
               >
                 {link.isHidden ? (
                   <>
@@ -131,9 +131,9 @@ export const LinkCardActions: React.FC<LinkCardActionsProps> = ({ link }) => {
                   setIsMenuOpen(false);
                   setIsDeleteOpen(true);
                 }}
-                className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-semibold text-[#273144] hover:bg-red-50 hover:text-red-600 dark:text-slate-200 dark:hover:bg-red-950/40 dark:hover:text-red-400 transition-colors cursor-pointer group"
+                className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm font-semibold text-[#273144] hover:bg-rose-50 hover:text-rose-600 dark:text-slate-200 dark:hover:bg-rose-950/40 dark:hover:text-rose-400 transition-colors cursor-pointer group/delete"
               >
-                <Trash2 className="h-4.5 w-4.5 shrink-0 text-[#273144] group-hover:text-red-600 dark:text-slate-200 dark:group-hover:text-red-400 transition-colors" />
+                <Trash2 className="h-4.5 w-4.5 shrink-0 text-[#273144] group-hover/delete:text-rose-600 dark:text-slate-200 dark:group-hover/delete:text-rose-400 transition-colors" />
                 <span>Delete</span>
               </button>
             </div>

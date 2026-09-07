@@ -65,7 +65,7 @@ export const NotificationCenterDropdown: React.FC<NotificationCenterDropdownProp
   };
 
   return (
-    <div className="absolute -right-20 sm:-right-24 md:-right-28 top-full mt-2 w-80 sm:w-[410px] rounded-lg border border-slate-200/90 bg-white shadow-xl dark:border-slate-800 dark:bg-slate-900 z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-150 text-[#273144] dark:text-slate-100">
+    <div className="fixed sm:absolute right-2 sm:right-0 top-14 sm:top-full sm:mt-2 w-[calc(100vw-1rem)] sm:w-[410px] max-w-md rounded-lg border border-slate-200/90 bg-white shadow-xl dark:border-slate-800 dark:bg-slate-900 z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-150 text-[#273144] dark:text-slate-100">
       {/* Panel Header */}
       <header className="px-5 py-4 border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-between">
         <h3 className="text-xl font-bold tracking-tight text-[#273144] dark:text-slate-100">

@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 
 export const SharedDynamicRoutingCard: React.FC = () => {
   return (
-    <div className="rounded-xl border border-slate-200/90 bg-white p-6 shadow-2xs dark:border-slate-800 dark:bg-slate-900">
+    <div className="rounded-xl border border-slate-200/90 bg-white p-4.5 sm:p-6 shadow-2xs dark:border-slate-800 dark:bg-slate-900">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="space-y-1 max-w-2xl">
           <div className="flex items-center gap-3">

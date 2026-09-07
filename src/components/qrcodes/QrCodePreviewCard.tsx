@@ -53,7 +53,7 @@ export const QrCodePreviewCard: React.FC<QrCodePreviewCardProps> = ({
       </h3>
 
       {/* Main Preview Container */}
-      <div className="flex flex-col items-center justify-center rounded-2xl border border-slate-200/80 bg-[#f4f6f8] p-6 shadow-2xs dark:border-slate-800 dark:bg-slate-900/50 min-h-[360px] sm:min-h-[380px]">
+      <div className="flex flex-col items-center justify-center rounded-xl border border-slate-200/80 bg-[#f4f6f8] p-6 shadow-2xs dark:border-slate-800 dark:bg-slate-900/50 min-h-[360px] sm:min-h-[380px]">
         {hasInput ? (
           /* Active State: White Card with custom QR code encoding preview landing page */
           <div className="relative flex items-center justify-center rounded-xl bg-white p-5 shadow-sm border border-slate-100 dark:border-slate-800 dark:bg-slate-800 transition-all duration-300">

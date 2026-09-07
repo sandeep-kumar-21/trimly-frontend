@@ -86,11 +86,11 @@ export default function QrCodeCustomizeDesignPage() {
   };
 
   return (
-    <div className="w-full pb-12">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+    <div className="w-full">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
         {/* Left Column: Form Cards (~7 Cols) */}
         <div className="lg:col-span-7 space-y-6">
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#273144] dark:text-slate-100 mb-2">
+          <h1 className="text-xl sm:text-3xl font-bold tracking-tight text-[#273144] dark:text-slate-100 mb-1 sm:mb-2">
             Customize design
           </h1>
 
@@ -101,21 +101,21 @@ export default function QrCodeCustomizeDesignPage() {
           />
 
           {/* Save changes & Cancel Action Buttons */}
-          <div className="flex items-center gap-4 pt-2">
+          <div className="flex flex-wrap items-center gap-2.5 sm:gap-4 pt-2">
             <button
               type="button"
               onClick={handleSaveChanges}
               disabled={createQrMutation.isPending || isDetailsLoading || isLowContrast}
               title={isLowContrast ? 'Code and background colors must have sufficient contrast to be scannable' : undefined}
-              className="h-10 px-6 rounded-lg bg-[#2a5bd7] font-bold text-white text-sm hover:bg-[#1d4cc9] shadow-2xs transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2"
+              className="h-9 sm:h-10 px-4 sm:px-6 rounded-lg sm:rounded-md bg-[#2a5bd7] font-bold text-white text-xs sm:text-sm hover:bg-[#1d4cc9] shadow-2xs transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2"
             >
-              {createQrMutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
+              {createQrMutation.isPending && <Loader2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 animate-spin" />}
               <span>Save changes</span>
             </button>
             <button
               type="button"
               onClick={handleCancel}
-              className="h-10 px-4 rounded-lg text-sm font-bold text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition-colors cursor-pointer"
+              className="h-9 sm:h-10 px-3 sm:px-4 rounded-lg sm:rounded-md text-xs sm:text-sm font-bold text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition-colors cursor-pointer"
             >
               Cancel
             </button>

@@ -35,8 +35,16 @@ export const AiAssistSidePanel: React.FC<AiAssistSidePanelProps> = ({ isOpen, on
   };
 
   return (
-    <div className="relative h-full shrink-0 flex w-full max-w-sm flex-col border-l border-slate-200 bg-white shadow-lg transition-all duration-300 dark:border-slate-800 dark:bg-slate-900 sm:w-[380px] lg:w-[400px] z-20">
-      {/* Header */}
+    <>
+      {/* Mobile/Tablet Backdrop (Below Topbar, No Blur) */}
+      <div
+        className="fixed inset-x-0 top-14 bottom-0 bg-slate-900/40 z-30 lg:hidden animate-in fade-in duration-200"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+
+      <aside className="fixed top-14 bottom-0 right-0 z-40 flex w-full sm:w-[380px] lg:w-[400px] lg:static lg:z-20 h-[calc(100vh-3.5rem)] lg:h-full shrink-0 flex-col border-l border-slate-200 bg-white shadow-2xl lg:shadow-none transition-all duration-300 dark:border-slate-800 dark:bg-slate-900 animate-in slide-in-from-right duration-200">
+        {/* Header */}
       <div className="flex h-14 items-center justify-between border-b border-slate-200 px-4 dark:border-slate-800">
         <div className="flex items-center gap-2">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -53,7 +61,7 @@ export const AiAssistSidePanel: React.FC<AiAssistSidePanelProps> = ({ isOpen, on
         </div>
         <button
           onClick={onClose}
-          className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+          className="rounded-md p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 transition-colors cursor-pointer"
           aria-label="Close panel"
         >
           <X className="h-5 w-5" />
@@ -66,7 +74,7 @@ export const AiAssistSidePanel: React.FC<AiAssistSidePanelProps> = ({ isOpen, on
           <>
             {/* Hero Illustration & Welcome Title */}
             <div className="flex flex-col items-center text-center space-y-3 pt-2">
-              <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-slate-50/80 dark:bg-slate-800/60 p-3">
+              <div className="flex h-20 w-20 items-center justify-center rounded-xl bg-slate-50/80 dark:bg-slate-800/60 p-3">
                 <svg width="44" height="44" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M16.3636 7.27273L17.5 4.77273L20 3.63636L17.5 2.5L16.3636 0L15.2273 2.5L12.7273 3.63636L15.2273 4.77273L16.3636 7.27273ZM9.54545 7.72727L7.27273 2.72727L5 7.72727L0 10L5 12.2727L7.27273 17.2727L9.54545 12.2727L14.5455 10L9.54545 7.72727ZM16.3636 12.7273L15.2273 15.2273L12.7273 16.3636L15.2273 17.5L16.3636 20L17.5 17.5L20 16.3636L17.5 15.2273L16.3636 12.7273Z" fill="url(#hero_sparkle_gradient)" />
                   <defs>
@@ -88,35 +96,28 @@ export const AiAssistSidePanel: React.FC<AiAssistSidePanelProps> = ({ isOpen, on
             </div>
 
             {/* Benefits Checklist */}
-            <div className="space-y-3 pt-4 border-t border-slate-100 dark:border-slate-800">
-              <p className="text-sm font-semibold text-[#273144] dark:text-slate-100">
-                With Trimly Assist, you can:
-              </p>
-
-              <ul className="space-y-2.5 text-sm text-slate-600 dark:text-slate-300">
+            <div className="space-y-4 rounded-xl border border-slate-200 bg-white p-4 shadow-2xs dark:border-slate-800 dark:bg-slate-900">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                What you can do
+              </span>
+              <ul className="space-y-3 text-xs font-medium text-slate-700 dark:text-slate-300">
                 <li className="flex items-start gap-2.5">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-400 mt-0.5">
-                    <Check className="h-3.5 w-3.5" />
-                  </span>
-                  <span>Get instant analytics and performance insights</span>
+                  <div className="h-5 w-5 rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                    <Check className="h-3 w-3" />
+                  </div>
+                  <span>Instantly generate clean short links & custom UTM tags</span>
                 </li>
                 <li className="flex items-start gap-2.5">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-400 mt-0.5">
-                    <Check className="h-3.5 w-3.5" />
-                  </span>
-                  <span>Create and optimize links with AI assistance</span>
+                  <div className="h-5 w-5 rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                    <Check className="h-3 w-3" />
+                  </div>
+                  <span>Ask analytical questions about your top traffic sources</span>
                 </li>
                 <li className="flex items-start gap-2.5">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-400 mt-0.5">
-                    <Check className="h-3.5 w-3.5" />
-                  </span>
-                  <span>Generate QR Codes and branded content</span>
-                </li>
-                <li className="flex items-start gap-2.5">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-400 mt-0.5">
-                    <Check className="h-3.5 w-3.5" />
-                  </span>
-                  <span>Discover trends and patterns automatically</span>
+                  <div className="h-5 w-5 rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                    <Check className="h-3 w-3" />
+                  </div>
+                  <span>Automate campaign setup across multi-channel rollouts</span>
                 </li>
               </ul>
             </div>
@@ -124,17 +125,17 @@ export const AiAssistSidePanel: React.FC<AiAssistSidePanelProps> = ({ isOpen, on
         ) : (
           /* Active Chat Thread */
           <div className="space-y-4">
-            {messages.map((msg, idx) => (
+            {messages.map((msg, i) => (
               <div
-                key={idx}
+                key={i}
                 className={`flex flex-col ${
                   msg.role === 'user' ? 'items-end' : 'items-start'
                 }`}
               >
                 <div
-                  className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm ${
+                  className={`max-w-[85%] rounded-xl px-4 py-2.5 text-sm ${
                     msg.role === 'user'
-                      ? 'bg-blue-600 text-white rounded-br-none'
+                      ? 'bg-[#2a5bd7] text-white rounded-br-none'
                       : 'bg-slate-100 dark:bg-slate-800 text-[#273144] dark:text-slate-100 rounded-bl-none'
                   }`}
                 >
@@ -167,7 +168,7 @@ export const AiAssistSidePanel: React.FC<AiAssistSidePanelProps> = ({ isOpen, on
             <button
               type="button"
               onClick={() => toast.info('File attachment feature ready')}
-              className="h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
+              className="h-8 w-8 flex items-center justify-center rounded-md border border-slate-200 dark:border-slate-700 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
               title="Add attachment"
             >
               <Plus className="h-4 w-4" />
@@ -176,7 +177,7 @@ export const AiAssistSidePanel: React.FC<AiAssistSidePanelProps> = ({ isOpen, on
             <button
               type="submit"
               disabled={!prompt.trim()}
-              className="h-8 w-8 flex items-center justify-center rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+              className="h-8 w-8 flex items-center justify-center rounded-md bg-[#2a5bd7] text-white hover:bg-[#1d4cc9] disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
               title="Submit prompt"
             >
               <ArrowRight className="h-4 w-4" />
@@ -188,6 +189,7 @@ export const AiAssistSidePanel: React.FC<AiAssistSidePanelProps> = ({ isOpen, on
           Trimly Assist can make mistakes. Always verify your links, codes, and data.
         </p>
       </form>
-    </div>
+    </aside>
+  </>
   );
 };

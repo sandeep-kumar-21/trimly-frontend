@@ -21,11 +21,12 @@ export default function LinkEditPage() {
     queryKey: ['link', code],
     queryFn: () => linksApi.getLinkByCode(code),
     enabled: !!code,
+    staleTime: 1000 * 60,
   });
 
   if (isLoading) {
     return (
-      <div className="w-full pb-12">
+      <div className="w-full">
         <div className="lg:max-w-3xl space-y-6">
           <TableSkeleton rows={4} />
         </div>

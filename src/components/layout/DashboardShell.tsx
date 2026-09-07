@@ -7,7 +7,7 @@ import { WhatToCreateModal } from '@/components/modals/WhatToCreateModal';
 import { AiAssistSidePanel } from '@/components/home/AiAssistSidePanel';
 import { useAuth } from '@/hooks/useAuth';
 import { useUIStore } from '@/store/uiStore';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { Spinner } from '@/components/ui/Spinner';
 
 export interface DashboardShellProps {
@@ -16,8 +16,14 @@ export interface DashboardShellProps {
 
 export const DashboardShell: React.FC<DashboardShellProps> = ({ children }) => {
   const { user, isLoading, isAuthenticated } = useAuth();
-  const { isAiAssistOpen, setAiAssistOpen } = useUIStore();
+  const { isAiAssistOpen, setAiAssistOpen, setSidebarOpen } = useUIStore();
   const router = useRouter();
+  const pathname = usePathname();
+  const isWhiteBackgroundPage = pathname?.startsWith('/settings') || pathname?.includes('/edit');
+
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [pathname, setSidebarOpen]);
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -46,7 +52,13 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ children }) => {
       <div className="flex flex-1 flex-col overflow-hidden">
         <Topbar />
         <div className="flex flex-1 overflow-hidden relative">
-          <main className="flex-1 overflow-y-auto px-6 py-6 sm:px-12 sm:py-8 lg:px-16 lg:py-10 bg-[#f4f6f8] dark:bg-slate-950 transition-all duration-300">
+          <main
+            className={`flex-1 overflow-y-auto px-3 pt-4 pb-8 sm:px-6 sm:py-6 md:px-8 lg:px-14 xl:px-18 lg:py-8 transition-all duration-300 ${
+              isWhiteBackgroundPage
+                ? 'bg-white dark:bg-slate-900'
+                : 'bg-[#f4f6f8] dark:bg-slate-950'
+            }`}
+          >
             <div className="mx-auto max-w-[1440px] space-y-6">{children}</div>
           </main>
 

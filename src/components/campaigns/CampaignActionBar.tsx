@@ -21,7 +21,7 @@ export const CampaignActionBar: React.FC<CampaignActionBarProps> = ({
           type="button"
           onClick={onCancel}
           disabled={isLoading}
-          className="h-11 px-6 rounded-lg border border-slate-300 bg-white text-sm font-bold text-[#273144] hover:bg-slate-50 transition-colors cursor-pointer dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+          className="h-10 sm:h-11 px-4 sm:px-6 rounded-md border border-slate-300 bg-white text-xs sm:text-sm font-bold text-[#273144] hover:bg-slate-50 transition-colors cursor-pointer dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
         >
           Cancel
         </button>
@@ -30,12 +30,12 @@ export const CampaignActionBar: React.FC<CampaignActionBarProps> = ({
           type="button"
           onClick={onSubmit}
           disabled={isLoading}
-          className="h-11 px-6 rounded-lg bg-[#2a5bd7] text-white text-sm font-bold hover:bg-[#1a4bb7] transition-all shadow-2xs cursor-pointer flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="h-10 sm:h-11 px-4 sm:px-6 rounded-md bg-[#2a5bd7] text-white text-xs sm:text-sm font-bold hover:bg-[#1a4bb7] transition-all shadow-2xs cursor-pointer flex items-center gap-1.5 sm:gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isLoading ? (
             <>
               <Loader2 className="h-4 w-4 animate-spin" />
-              <span>Creating campaign...</span>
+              <span>Creating...</span>
             </>
           ) : (
             <>

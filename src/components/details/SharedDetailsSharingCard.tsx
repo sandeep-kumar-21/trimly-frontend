@@ -13,6 +13,7 @@ export interface SharedDetailsSharingCardProps {
   shortCode: string;
   destinationUrl?: string;
   shortUrl?: string;
+  hasQR?: boolean;
 }
 
 export const SharedDetailsSharingCard: React.FC<SharedDetailsSharingCardProps> = ({
@@ -20,23 +21,11 @@ export const SharedDetailsSharingCard: React.FC<SharedDetailsSharingCardProps> =
   shortCode,
   destinationUrl,
   shortUrl,
+  hasQR,
 }) => {
   const router = useRouter();
   const isQrMode = type === 'qrcode';
   const displayShortLink = `trim.ly/${shortCode}`;
-
-  const [localHasQr, setLocalHasQr] = useState<boolean>(() => {
-    if (typeof window !== 'undefined' && shortCode) {
-      return localStorage.getItem(`qr_created_${shortCode.toString().trim().toLowerCase()}`) === 'true';
-    }
-    return false;
-  });
-
-  useEffect(() => {
-    if (typeof window !== 'undefined' && shortCode) {
-      setLocalHasQr(localStorage.getItem(`qr_created_${shortCode.toString().trim().toLowerCase()}`) === 'true');
-    }
-  }, [shortCode]);
 
   const { data: userQrCodes = [], isLoading } = useUserQrCodes();
   const matchingQr = userQrCodes.find(
@@ -72,8 +61,8 @@ export const SharedDetailsSharingCard: React.FC<SharedDetailsSharingCardProps> =
     return svg;
   }, [activeSvg, shortCode]);
 
-  const hasSavedQr = localHasQr || !!activeQr;
-  const hasQrCode = isQrMode || hasSavedQr;
+  // Reliable evaluation: In QR Mode, QR code always exists. In Link Mode, check backend hasQR flag and svg presence.
+  const hasQrCode = isQrMode ? true : (hasQR !== undefined ? Boolean(hasQR && (activeSvg || matchingQr)) : Boolean(activeSvg));
 
   const targetQrData = shortUrl || activeQr?.shortUrl || `http://localhost:4000/${shortCode}`;
   const qrConfig = activeQr?.qrConfig;
@@ -156,7 +145,7 @@ export const SharedDetailsSharingCard: React.FC<SharedDetailsSharingCardProps> =
     }
   };
 
-  if (isLoading && !localHasQr && !isQrMode) {
+  if (isLoading && hasQrCode) {
     return (
       <div className="h-full w-full rounded-xl border border-slate-200/90 bg-white p-6 shadow-2xs dark:border-slate-800 dark:bg-slate-900 space-y-6 flex flex-col justify-between animate-pulse">
         <div className="flex items-center justify-between">
@@ -171,7 +160,7 @@ export const SharedDetailsSharingCard: React.FC<SharedDetailsSharingCardProps> =
   }
 
   return (
-    <div className="h-full w-full rounded-xl border border-slate-200/90 bg-white p-6 shadow-2xs dark:border-slate-800 dark:bg-slate-900 space-y-6 flex flex-col justify-between">
+    <div className="h-full w-full rounded-xl border border-slate-200/90 bg-white p-4.5 sm:p-6 shadow-2xs dark:border-slate-800 dark:bg-slate-900 space-y-6 flex flex-col justify-between">
       {/* 1. QR Code Section */}
       <div className="space-y-4 flex-1 flex flex-col justify-between">
         <div className="flex items-center justify-between">
@@ -197,14 +186,14 @@ export const SharedDetailsSharingCard: React.FC<SharedDetailsSharingCardProps> =
                   </button>
 
                   {isMenuOpen && (
-                    <div className="absolute right-0 top-full z-50 mt-1.5 w-52 rounded-xl border border-slate-200/90 bg-white p-1.5 shadow-2xl dark:border-slate-800 dark:bg-slate-900 animate-in fade-in zoom-in-95 duration-100">
+                    <div className="absolute right-0 top-full z-50 mt-1.5 w-52 rounded-md border border-slate-200/90 bg-white py-1 shadow-lg dark:border-slate-800 dark:bg-slate-900 animate-in fade-in zoom-in-95 duration-100 overflow-hidden">
                       <button
                         type="button"
                         onClick={() => {
                           setIsMenuOpen(false);
                           router.push(`/qrcodes/${shortCode}/edit/customize?from=details`);
                         }}
-                        className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-semibold text-[#273144] hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800/60 transition-colors cursor-pointer"
+                        className="flex w-full items-center gap-2.5 px-3.5 py-1.5 sm:py-2 text-left text-sm font-medium text-[#273144] hover:bg-[#f4f6f8] dark:text-slate-100 dark:hover:bg-slate-800/80 transition-colors cursor-pointer"
                       >
                         <Palette className="h-4.5 w-4.5 shrink-0 text-[#273144] dark:text-slate-200" />
                         <span>Customize</span>
@@ -216,7 +205,7 @@ export const SharedDetailsSharingCard: React.FC<SharedDetailsSharingCardProps> =
                           setIsMenuOpen(false);
                           router.push(`/qrcodes/${shortCode}/details`);
                         }}
-                        className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-semibold text-[#273144] hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800/60 transition-colors cursor-pointer"
+                        className="flex w-full items-center gap-2.5 px-3.5 py-1.5 sm:py-2 text-left text-sm font-medium text-[#273144] hover:bg-[#f4f6f8] dark:text-slate-100 dark:hover:bg-slate-800/80 transition-colors cursor-pointer"
                       >
                         <Eye className="h-4.5 w-4.5 shrink-0 text-[#273144] dark:text-slate-200" />
                         <span>View code details</span>
@@ -246,13 +235,13 @@ export const SharedDetailsSharingCard: React.FC<SharedDetailsSharingCardProps> =
                     role="menu"
                     aria-orientation="vertical"
                     aria-labelledby="download-menu-button"
-                    className="absolute right-0 top-full z-50 mt-1.5 w-44 overflow-hidden rounded-lg border border-slate-200/90 bg-white py-1 shadow-xl dark:border-slate-800 dark:bg-slate-900 animate-in fade-in zoom-in-95 duration-100"
+                    className="absolute right-0 top-full z-50 mt-1.5 w-44 overflow-hidden rounded-md border border-slate-200/90 bg-white py-1 shadow-lg dark:border-slate-800 dark:bg-slate-900 animate-in fade-in zoom-in-95 duration-100"
                   >
                     <button
                       type="button"
                       role="menuitem"
                       onClick={() => handleDownload('png')}
-                      className="w-full px-4 py-2 text-left text-sm font-semibold text-[#273144] hover:bg-[#f0f4fa] dark:text-slate-200 dark:hover:bg-slate-800/80 transition-colors cursor-pointer"
+                      className="w-full px-3.5 py-1.5 sm:py-2 text-left text-sm font-medium text-[#273144] hover:bg-[#f4f6f8] dark:text-slate-100 dark:hover:bg-slate-800/80 transition-colors cursor-pointer"
                     >
                       Download PNG
                     </button>
@@ -261,7 +250,7 @@ export const SharedDetailsSharingCard: React.FC<SharedDetailsSharingCardProps> =
                       type="button"
                       role="menuitem"
                       onClick={() => handleDownload('svg')}
-                      className="w-full px-4 py-2 text-left text-sm font-semibold text-[#273144] hover:bg-[#f0f4fa] dark:text-slate-200 dark:hover:bg-slate-800/80 transition-colors cursor-pointer"
+                      className="w-full px-3.5 py-1.5 sm:py-2 text-left text-sm font-medium text-[#273144] hover:bg-[#f4f6f8] dark:text-slate-100 dark:hover:bg-slate-800/80 transition-colors cursor-pointer"
                     >
                       Download SVG
                     </button>
@@ -270,7 +259,7 @@ export const SharedDetailsSharingCard: React.FC<SharedDetailsSharingCardProps> =
                       type="button"
                       role="menuitem"
                       onClick={() => handleDownload('jpeg')}
-                      className="w-full px-4 py-2 text-left text-sm font-semibold text-[#273144] hover:bg-[#f0f4fa] dark:text-slate-200 dark:hover:bg-slate-800/80 transition-colors cursor-pointer"
+                      className="w-full px-3.5 py-1.5 sm:py-2 text-left text-sm font-medium text-[#273144] hover:bg-[#f4f6f8] dark:text-slate-100 dark:hover:bg-slate-800/80 transition-colors cursor-pointer"
                     >
                       Download JPEG
                     </button>

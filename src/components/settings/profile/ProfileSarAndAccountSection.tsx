@@ -15,7 +15,7 @@ export const ProfileSarAndAccountSection: React.FC = () => {
       <button
         type="button"
         onClick={handleDeleteAccount}
-        className="rounded-md bg-[#dc2626] px-4 py-2 text-sm font-bold text-white hover:bg-red-700 transition-colors shadow-2xs cursor-pointer"
+        className="h-10 px-5 rounded-md bg-[#dc2626] text-xs sm:text-sm font-bold text-white hover:bg-red-700 transition-colors shadow-2xs cursor-pointer"
       >
         Delete account
       </button>

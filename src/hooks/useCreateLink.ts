@@ -3,6 +3,7 @@ import { linksApi } from '@/lib/api/links.api';
 import { CreateLinkPayload, ShortLink } from '@/types/link.types';
 import { toast } from 'sonner';
 import { useUIStore } from '@/store/uiStore';
+import { copyToClipboard } from '@/lib/utils/clipboard';
 
 export function useCreateLink() {
   const queryClient = useQueryClient();
@@ -11,8 +12,12 @@ export function useCreateLink() {
   return useMutation({
     mutationFn: (payload: CreateLinkPayload) => linksApi.createLink(payload),
     onSuccess: (newLink: ShortLink) => {
-      queryClient.setQueryData<ShortLink[]>(['links'], (old = []) => [newLink, ...old]);
+      queryClient.setQueriesData({ queryKey: ['links'] }, (old: any = []) => {
+        if (!Array.isArray(old)) return [newLink];
+        return [newLink, ...old.filter((l: any) => (l._id || l.shortCode) !== (newLink._id || newLink.shortCode))];
+      });
       queryClient.invalidateQueries({ queryKey: ['links'] });
+      queryClient.invalidateQueries({ queryKey: ['qrcodes'] });
       closeCreateModal();
 
       const shortUrl = newLink.shortUrl || `/${newLink.shortCode}`;
@@ -22,7 +27,7 @@ export function useCreateLink() {
         action: {
           label: 'Copy URL',
           onClick: () => {
-            navigator.clipboard.writeText(shortUrl);
+            copyToClipboard(shortUrl);
             toast.info('Copied to clipboard!');
           },
         },

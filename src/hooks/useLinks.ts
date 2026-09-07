@@ -13,7 +13,7 @@ export function useLinks(options?: UseLinksOptions | string[]) {
   const queryClient = useQueryClient();
   const normalizedOptions: UseLinksOptions = Array.isArray(options) ? { tags: options } : options || {};
 
-  const { data: links = [], isLoading, isError, error, refetch } = useQuery<ShortLink[]>({
+  const { data: links = [], isLoading, isFetching, isFetched, isError, error, refetch } = useQuery<ShortLink[]>({
     queryKey: ['links', normalizedOptions],
     queryFn: () => linksApi.getUserLinks(normalizedOptions),
     staleTime: 1000 * 30, // 30s
@@ -51,6 +51,8 @@ export function useLinks(options?: UseLinksOptions | string[]) {
   return {
     links,
     isLoading,
+    isFetching,
+    isFetched,
     isError,
     error,
     refetch,

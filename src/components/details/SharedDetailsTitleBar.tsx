@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Edit2, Share2, MoreHorizontal, Download, Eye, EyeOff, Trash2, Palette } from 'lucide-react';
 import { toast } from 'sonner';
@@ -10,6 +11,7 @@ import { qrcodesApi } from '@/lib/api/qrcodes.api';
 import { HideModal } from '@/components/modals/HideModal';
 import { ShareModal } from '@/components/modals/ShareModal';
 import { DeleteConfirmModal } from '@/components/modals/DeleteConfirmModal';
+import { Dropdown } from '@/components/ui/Dropdown';
 
 export interface SharedDetailsTitleBarProps {
   type: 'link' | 'qrcode';
@@ -40,9 +42,19 @@ export const SharedDetailsTitleBar: React.FC<SharedDetailsTitleBarProps> = ({
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isActionLoading, setIsActionLoading] = useState(false);
-
   const menuRef = useRef<HTMLDivElement>(null);
   const downloadMenuRef = useRef<HTMLDivElement>(null);
+
+  const editHref = isQrMode ? `/qrcodes/${shortCode}/edit` : `/links/${shortCode}/edit`;
+
+  useEffect(() => {
+    if (shortCode) {
+      router.prefetch(editHref);
+      if (isQrMode) {
+        router.prefetch(`/qrcodes/${shortCode}/edit/customize?from=details`);
+      }
+    }
+  }, [shortCode, isQrMode, editHref, router]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -69,14 +81,6 @@ export const SharedDetailsTitleBar: React.FC<SharedDetailsTitleBarProps> = ({
 
   const handleShare = () => {
     setIsShareModalOpen(true);
-  };
-
-  const handleEdit = () => {
-    if (isQrMode) {
-      router.push(`/qrcodes/${shortCode}/edit`);
-    } else {
-      router.push(`/links/${shortCode}/edit`);
-    }
   };
 
   const handleDownload = async (format: 'png' | 'jpeg' | 'svg') => {
@@ -163,30 +167,23 @@ export const SharedDetailsTitleBar: React.FC<SharedDetailsTitleBarProps> = ({
 
   return (
     <>
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-2">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 py-1 sm:py-2">
         {/* Left Side: Back Arrow + Favicon/Icon + Title */}
-        <div className="flex items-center gap-3.5 min-w-0">
-          <button
-            type="button"
-            onClick={() => {
-              if (window.history.length > 1) {
-                router.back();
-              } else {
-                router.push(isQrMode ? '/qrcodes' : '/links');
-              }
-            }}
-            aria-label="Back to list"
-            className="p-2 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-100 transition-colors cursor-pointer shrink-0"
+        <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0 flex-1">
+          <Link
+            href={isQrMode ? '/qrcodes' : '/links'}
+            aria-label={isQrMode ? 'Back to QR codes list' : 'Back to links list'}
+            className="p-1.5 sm:p-2 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-100 transition-colors cursor-pointer shrink-0"
           >
             <ArrowLeft className="h-5 w-5" />
-          </button>
+          </Link>
 
           {!isQrMode && (
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200/60 bg-slate-50 dark:border-slate-800 dark:bg-slate-800">
+            <div className="flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200/60 bg-slate-50 dark:border-slate-800 dark:bg-slate-800">
               <img
                 src={`https://icons.duckduckgo.com/ip2/${faviconDomain}.ico`}
                 alt="Favicon"
-                className="h-5 w-5 rounded-xs"
+                className="h-4.5 w-4.5 sm:h-5 sm:w-5 rounded-xs"
                 onError={(e) => {
                   (e.target as HTMLElement).style.display = 'none';
                 }}
@@ -194,13 +191,13 @@ export const SharedDetailsTitleBar: React.FC<SharedDetailsTitleBarProps> = ({
             </div>
           )}
 
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#273144] dark:text-slate-100 truncate">
+          <h1 className="text-lg sm:text-2xl font-bold tracking-tight text-[#273144] dark:text-slate-100 truncate">
             {title}
           </h1>
         </div>
 
         {/* Right Side Actions Bar */}
-        <div className="flex items-center gap-3 shrink-0 self-start sm:self-center">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0 self-start sm:self-center">
           {/* More Options Dropdown */}
           <div className="relative" ref={menuRef}>
             <button
@@ -217,7 +214,7 @@ export const SharedDetailsTitleBar: React.FC<SharedDetailsTitleBarProps> = ({
             </button>
 
             {isMenuOpen && (
-              <div className="absolute right-0 top-full z-50 mt-1.5 w-56 rounded-xl border border-slate-200/90 bg-white p-1.5 shadow-2xl dark:border-slate-800 dark:bg-slate-900 animate-in fade-in zoom-in-95 duration-100">
+              <div className="absolute left-0 sm:left-auto sm:right-0 top-full z-50 mt-1.5 w-56 rounded-md border border-slate-200/90 bg-white py-1 shadow-lg dark:border-slate-800 dark:bg-slate-900 animate-in fade-in zoom-in-95 duration-100 overflow-hidden">
                 {isQrMode ? (
                   <>
                     <button
@@ -226,7 +223,7 @@ export const SharedDetailsTitleBar: React.FC<SharedDetailsTitleBarProps> = ({
                         setIsMenuOpen(false);
                         router.push(`/qrcodes/${shortCode}/edit/customize?from=details`);
                       }}
-                      className="flex w-full items-center gap-3 bg-transparent rounded-lg px-3 py-2 text-left text-sm font-semibold text-[#273144] hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800/60 transition-colors cursor-pointer"
+                      className="flex w-full items-center gap-2.5 px-3.5 py-1.5 sm:py-2 text-left text-sm font-medium text-[#273144] hover:bg-[#f4f6f8] dark:text-slate-100 dark:hover:bg-slate-800/80 transition-colors cursor-pointer"
                     >
                       <Palette className="h-4.5 w-4.5 shrink-0 text-[#273144] dark:text-slate-200" />
                       <span>Customize</span>
@@ -248,7 +245,7 @@ export const SharedDetailsTitleBar: React.FC<SharedDetailsTitleBarProps> = ({
                             toast.error('Failed to hide link');
                           }
                         }}
-                        className="flex w-full items-center gap-3 bg-transparent rounded-lg px-3 py-2 text-left text-sm font-semibold text-[#273144] hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800/60 transition-colors cursor-pointer"
+                        className="flex w-full items-center gap-2.5 px-3.5 py-1.5 sm:py-2 text-left text-sm font-medium text-[#273144] hover:bg-[#f4f6f8] dark:text-slate-100 dark:hover:bg-slate-800/80 transition-colors cursor-pointer"
                       >
                         <EyeOff className="h-4.5 w-4.5 shrink-0 text-[#273144] dark:text-slate-200" />
                         <span>Hide link</span>
@@ -270,7 +267,7 @@ export const SharedDetailsTitleBar: React.FC<SharedDetailsTitleBarProps> = ({
                             toast.error('Failed to unhide link');
                           }
                         }}
-                        className="flex w-full items-center gap-3 bg-transparent rounded-lg px-3 py-2 text-left text-sm font-semibold text-[#273144] hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800/60 transition-colors cursor-pointer"
+                        className="flex w-full items-center gap-2.5 px-3.5 py-1.5 sm:py-2 text-left text-sm font-medium text-[#273144] hover:bg-[#f4f6f8] dark:text-slate-100 dark:hover:bg-slate-800/80 transition-colors cursor-pointer"
                       >
                         <Eye className="h-4.5 w-4.5 shrink-0 text-[#273144] dark:text-slate-200" />
                         <span>Unhide link</span>
@@ -285,7 +282,7 @@ export const SharedDetailsTitleBar: React.FC<SharedDetailsTitleBarProps> = ({
                         setIsMenuOpen(false);
                         setIsHideModalOpen(true);
                       }}
-                      className="flex w-full items-center gap-3 bg-transparent rounded-lg px-3 py-2 text-left text-sm font-semibold text-[#273144] hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800/60 transition-colors cursor-pointer"
+                      className="flex w-full items-center gap-2.5 px-3.5 py-1.5 sm:py-2 text-left text-sm font-medium text-[#273144] hover:bg-[#f4f6f8] dark:text-slate-100 dark:hover:bg-slate-800/80 transition-colors cursor-pointer"
                     >
                       {isHidden ? (
                         <>
@@ -301,16 +298,16 @@ export const SharedDetailsTitleBar: React.FC<SharedDetailsTitleBarProps> = ({
                     </button>
                   </>
                 )}
-                <hr className="my-1 border-slate-100 dark:border-slate-800" />
+                <hr className="my-1 border-t border-slate-100 dark:border-slate-800" />
                 <button
                   type="button"
                   onClick={() => {
                     setIsMenuOpen(false);
                     setIsDeleteModalOpen(true);
                   }}
-                  className="flex w-full items-center gap-3 bg-transparent rounded-lg px-3 py-2 text-left text-sm font-semibold text-[#273144] hover:bg-red-50 hover:text-red-600 dark:text-slate-200 dark:hover:bg-red-950/40 dark:hover:text-red-400 transition-colors cursor-pointer group"
+                  className="flex w-full items-center gap-2.5 px-3.5 py-1.5 sm:py-2 text-left text-sm font-medium text-[#273144] hover:bg-[#f4f6f8] dark:text-slate-100 dark:hover:bg-slate-800/80 transition-colors cursor-pointer"
                 >
-                  <Trash2 className="h-4.5 w-4.5 shrink-0 text-[#273144] group-hover:text-red-600 dark:text-slate-200 dark:group-hover:text-red-400 transition-colors" />
+                  <Trash2 className="h-4.5 w-4.5 shrink-0 text-[#273144] dark:text-slate-200" />
                   <span>Delete</span>
                 </button>
               </div>
@@ -319,80 +316,49 @@ export const SharedDetailsTitleBar: React.FC<SharedDetailsTitleBarProps> = ({
 
           {/* Edit Button */}
           {isQrMode ? (
-            <button
-              type="button"
-              onClick={handleEdit}
-              className="h-10 px-4 rounded-lg border border-slate-200 bg-white font-bold text-sm text-[#273144] hover:bg-slate-50 transition-colors shadow-2xs flex items-center gap-2 cursor-pointer dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200"
+            <Link
+              href={editHref}
+              prefetch={true}
+              className="h-9 sm:h-10 px-3 sm:px-4 rounded-lg sm:rounded-md border border-slate-200 bg-white font-bold text-xs sm:text-sm text-[#273144] hover:bg-slate-50 transition-colors shadow-2xs flex items-center gap-1.5 sm:gap-2 cursor-pointer dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200"
             >
-              <Edit2 className="h-4 w-4" />
+              <Edit2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               <span>Edit</span>
-            </button>
+            </Link>
           ) : (
-            <button
-              type="button"
-              onClick={handleEdit}
-              className="p-2 rounded-lg text-[#273144] hover:bg-slate-100 hover:text-[#2a5bd7] dark:text-slate-200 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+            <Link
+              href={editHref}
+              prefetch={true}
+              className="h-9 sm:h-10 px-3 sm:px-4 rounded-lg sm:rounded-md border border-slate-200 bg-white font-bold text-xs sm:text-sm text-[#273144] hover:bg-slate-50 transition-colors shadow-2xs flex items-center gap-1.5 sm:gap-2 cursor-pointer dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200"
               title="Edit link"
             >
-              <Edit2 className="h-5 w-5" />
-            </button>
+              <Edit2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              <span>Edit</span>
+            </Link>
           )}
 
           {/* Download Button for QR Mode / Share Button for Link Mode */}
           {isQrMode ? (
-            <div className="relative" ref={downloadMenuRef}>
-              <button
-                type="button"
-                onClick={() => setIsDownloadMenuOpen(!isDownloadMenuOpen)}
-                className="h-10 px-4 rounded-lg border border-slate-200 bg-white font-bold text-sm text-[#273144] hover:bg-slate-50 transition-colors shadow-2xs flex items-center gap-2 cursor-pointer dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200"
-              >
-                <Download className="h-4 w-4" />
-                <span>Download</span>
-              </button>
-
-              {isDownloadMenuOpen && (
-                <div
-                  role="menu"
-                  aria-orientation="vertical"
-                  aria-labelledby="download-menu-button"
-                  className="absolute right-0 top-full z-50 mt-1.5 w-44 overflow-hidden rounded-lg border border-slate-200/90 bg-white py-1 shadow-xl dark:border-slate-800 dark:bg-slate-900 animate-in fade-in zoom-in-95 duration-100"
-                >
-                  <button
-                    type="button"
-                    role="menuitem"
-                    onClick={() => handleDownload('png')}
-                    className="w-full px-4 py-2 text-left text-sm font-semibold text-[#273144] hover:bg-[#f0f4fa] dark:text-slate-200 dark:hover:bg-slate-800/80 transition-colors cursor-pointer"
-                  >
-                    Download PNG
-                  </button>
-
-                  <button
-                    type="button"
-                    role="menuitem"
-                    onClick={() => handleDownload('svg')}
-                    className="w-full px-4 py-2 text-left text-sm font-semibold text-[#273144] hover:bg-[#f0f4fa] dark:text-slate-200 dark:hover:bg-slate-800/80 transition-colors cursor-pointer"
-                  >
-                    Download SVG
-                  </button>
-
-                  <button
-                    type="button"
-                    role="menuitem"
-                    onClick={() => handleDownload('jpeg')}
-                    className="w-full px-4 py-2 text-left text-sm font-semibold text-[#273144] hover:bg-[#f0f4fa] dark:text-slate-200 dark:hover:bg-slate-800/80 transition-colors cursor-pointer"
-                  >
-                    Download JPEG
-                  </button>
+            <Dropdown
+              trigger={
+                <div className="h-9 sm:h-10 px-3 sm:px-4 rounded-lg sm:rounded-md border border-slate-200 bg-white font-bold text-xs sm:text-sm text-[#273144] hover:bg-slate-50 transition-colors shadow-2xs flex items-center gap-1.5 sm:gap-2 cursor-pointer dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200">
+                  <Download className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  <span>Download</span>
                 </div>
-              )}
-            </div>
+              }
+              items={[
+                { label: 'Download PNG', onClick: () => handleDownload('png') },
+                { label: 'Download SVG', onClick: () => handleDownload('svg') },
+                { label: 'Download JPEG', onClick: () => handleDownload('jpeg') },
+              ]}
+              align="right"
+            />
           ) : (
             <button
               type="button"
               onClick={handleShare}
-              className="h-10 px-4 rounded-lg bg-[#2a5bd7] text-white font-bold text-sm hover:bg-[#1a4bb7] transition-colors shadow-2xs flex items-center gap-2 cursor-pointer"
+              className="h-9 sm:h-10 px-3 sm:px-4 rounded-lg sm:rounded-md bg-[#2a5bd7] text-white font-bold text-xs sm:text-sm hover:bg-[#1a4bb7] transition-colors shadow-2xs flex items-center gap-1.5 sm:gap-2 cursor-pointer"
             >
-              <Share2 className="h-4 w-4" />
+              <Share2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               <span>Share</span>
             </button>
           )}
