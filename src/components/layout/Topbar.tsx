@@ -18,6 +18,7 @@ import { useRouter } from 'next/navigation';
 import { useUIStore } from '@/store/uiStore';
 import { NotificationCenterDropdown } from './NotificationCenterDropdown';
 import { SearchInput } from '@/components/ui/SearchInput';
+import { GlobalSearchModal } from './GlobalSearchModal';
 
 export const Topbar: React.FC = () => {
   const { user, logout } = useAuth();
@@ -25,6 +26,7 @@ export const Topbar: React.FC = () => {
   const router = useRouter();
   const [searchValue, setSearchValue] = useState('');
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
@@ -34,6 +36,18 @@ export const Topbar: React.FC = () => {
   const userName = user?.name || user?.email?.split('@')[0] || 'skumar';
   const userEmail = user?.email || 'skumarxz21@gmail.com';
   const userInitial = userName.charAt(0).toUpperCase();
+
+  // Listen for Cmd+K / Ctrl+K globally
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsCommandPaletteOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   useEffect(() => {
     if (isSearchExpanded && searchInputRef.current) {
@@ -125,22 +139,26 @@ export const Topbar: React.FC = () => {
           {/* RIGHT SIDE ITEMS: Search Bar (Desktop), Search Icon (Mobile), AI, Bell, User */}
           {/* ---------------------------------------------------- */}
           <div className="flex items-center gap-1.5 sm:gap-2.5 ml-auto">
-            {/* Desktop / Tablet Search Bar on the Right */}
-            <div className="hidden md:flex items-center w-48 sm:w-60 md:w-72 lg:w-80 mr-1">
-              <SearchInput
-                variant="filled"
-                placeholder="Search..."
-                value={searchValue}
-                onChange={setSearchValue}
-                showClearButton={Boolean(searchValue)}
-                onClear={() => setSearchValue('')}
-              />
+            {/* Desktop / Tablet Search Trigger on the Right */}
+            <div
+              onClick={() => setIsCommandPaletteOpen(true)}
+              className="hidden md:flex items-center w-48 sm:w-60 md:w-72 lg:w-80 mr-1 cursor-pointer"
+            >
+              <div className="flex w-full items-center justify-between gap-2 rounded-md border border-slate-200 bg-[#f4f7fa] dark:border-slate-700 dark:bg-slate-800 px-3 py-1.5 text-xs text-slate-400 hover:border-slate-300 dark:hover:border-slate-600 transition-colors shadow-2xs">
+                <div className="flex items-center gap-2">
+                  <Search className="h-4 w-4 text-slate-400 shrink-0" />
+                  <span className="truncate">Search links, QR codes...</span>
+                </div>
+                <kbd className="hidden lg:inline-flex items-center px-1.5 py-0.5 text-[10px] font-mono font-semibold text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-700 rounded border border-slate-200 dark:border-slate-600 shadow-2xs">
+                  ⌘K
+                </kbd>
+              </div>
             </div>
 
-            {/* Mobile Collapsed Search Button (Image 3) */}
+            {/* Mobile Search Button */}
             <button
               type="button"
-              onClick={() => setIsSearchExpanded(true)}
+              onClick={() => setIsCommandPaletteOpen(true)}
               className="p-2 cursor-pointer rounded-full text-[#273144] dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 md:hidden transition-colors"
               aria-label="Search button"
             >
@@ -252,6 +270,12 @@ export const Topbar: React.FC = () => {
       </div>
         </>
       )}
+
+      {/* Global Command Palette (Cmd + K) */}
+      <GlobalSearchModal
+        isOpen={isCommandPaletteOpen}
+        onClose={() => setIsCommandPaletteOpen(false)}
+      />
     </header>
   );
 };

@@ -27,7 +27,7 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ children }) => {
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      router.push('/login');
+      router.replace('/');
     }
   }, [isLoading, isAuthenticated, router]);
 

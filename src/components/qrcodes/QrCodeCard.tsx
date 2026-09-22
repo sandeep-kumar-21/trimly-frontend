@@ -145,7 +145,7 @@ export const QrCodeCard: React.FC<QrCodeCardProps> = ({
 
             <h2
               onClick={() => router.push(`/qrcodes/${item.shortCode}/details`)}
-              className="text-lg sm:text-xl font-bold text-[#273144] dark:text-slate-100 hover:text-[#2a5bd7] transition-colors cursor-pointer leading-tight truncate"
+              className="text-lg sm:text-xl font-bold text-[#273144] dark:text-slate-100 hover:underline cursor-pointer leading-tight truncate"
             >
               {item.title || `Untitled ${formattedDate}`}
             </h2>
@@ -164,7 +164,7 @@ export const QrCodeCard: React.FC<QrCodeCardProps> = ({
         <div className="md:hidden">
           <h2
             onClick={() => router.push(`/qrcodes/${item.shortCode}/details`)}
-            className="text-base sm:text-lg font-bold text-[#273144] dark:text-slate-100 hover:text-[#2a5bd7] transition-colors cursor-pointer leading-tight truncate block"
+            className="text-base sm:text-lg font-bold text-[#273144] dark:text-slate-100 hover:underline cursor-pointer leading-tight truncate block"
           >
             {item.title || `Untitled ${formattedDate}`}
           </h2>
@@ -177,7 +177,7 @@ export const QrCodeCard: React.FC<QrCodeCardProps> = ({
             href={item.destinationUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="truncate flex-1 min-w-0 hover:underline hover:text-[#2a5bd7] transition-colors"
+            className="truncate flex-1 min-w-0 hover:underline transition-colors"
           >
             {item.destinationUrl}
           </a>

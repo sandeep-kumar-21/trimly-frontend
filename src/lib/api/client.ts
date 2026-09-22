@@ -67,7 +67,7 @@ apiClient.interceptors.response.use(
     if (error.response?.status === 401) {
       setAuthToken(null);
       if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/login') && !window.location.pathname.startsWith('/register')) {
-        window.location.href = '/login';
+        window.location.href = '/';
       }
     }
     return Promise.reject(error);
