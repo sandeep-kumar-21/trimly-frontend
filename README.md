@@ -13,18 +13,32 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 
-**Backend Repository**: [Trimly Backend (NestJS / MongoDB / Redis / BullMQ)](https://github.com/sandeep-kumar-21/trimly-backend)
+**Backend Repositories**:
+- **NestJS Backend**: [Trimly Backend (NestJS / MongoDB / Redis / BullMQ)](https://github.com/sandeep-kumar-21/trimly-backend)  
+  [![NestJS](https://img.shields.io/badge/NestJS-11-E0234E?style=flat&logo=nestjs&logoColor=white)](https://github.com/sandeep-kumar-21/trimly-backend)
+  [![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose-47A248?style=flat&logo=mongodb&logoColor=white)](https://github.com/sandeep-kumar-21/trimly-backend)
+  [![Redis](https://img.shields.io/badge/Redis-5-DC382D?style=flat&logo=redis&logoColor=white)](https://github.com/sandeep-kumar-21/trimly-backend)
+  [![BullMQ](https://img.shields.io/badge/BullMQ-Queue-CC3534?style=flat&logo=npm&logoColor=white)](https://github.com/sandeep-kumar-21/trimly-backend)
+
+- **Spring Boot Java Backend**: [Trimly Backend Java v2 (Spring Boot 4.1.1 / Java 25 LTS / PostgreSQL 16 / Redis 7 / Spring Security 7 / Docker / JUnit 5)](https://github.com/sandeep-kumar-21/trimly-backend-java-v2)  
+  [![Spring Boot](https://img.shields.io/badge/Spring_Boot-4.1.1-6DB33F?style=flat&logo=springboot&logoColor=white)](https://github.com/sandeep-kumar-21/trimly-backend-java-v2)
+  [![Java](https://img.shields.io/badge/Java-25_LTS-ED8B00?style=flat&logo=openjdk&logoColor=white)](https://github.com/sandeep-kumar-21/trimly-backend-java-v2)
+  [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=flat&logo=postgresql&logoColor=white)](https://github.com/sandeep-kumar-21/trimly-backend-java-v2)
+  [![Redis](https://img.shields.io/badge/Redis-7-DC382D?style=flat&logo=redis&logoColor=white)](https://github.com/sandeep-kumar-21/trimly-backend-java-v2)
+  [![Spring Security](https://img.shields.io/badge/Spring_Security-7-6DB33F?style=flat&logo=springsecurity&logoColor=white)](https://github.com/sandeep-kumar-21/trimly-backend-java-v2)
+  [![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?style=flat&logo=docker&logoColor=white)](https://github.com/sandeep-kumar-21/trimly-backend-java-v2)
+  [![JUnit](https://img.shields.io/badge/JUnit-5-25A162?style=flat&logo=junit5&logoColor=white)](https://github.com/sandeep-kumar-21/trimly-backend-java-v2)
 
 ---
 
 ## Table of Contents
 
 - [About the Project](#about-the-project)
+- [Screenshots & UI Preview](#screenshots--ui-preview)
 - [Key Features](#key-features)
 - [Tech Stack](#tech-stack)
 - [Engineering Highlights](#engineering-highlights)
 - [Architecture & State Management](#architecture--state-management)
-- [Screenshots & UI Preview](#screenshots--ui-preview)
 - [Project Structure](#project-structure)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
@@ -53,23 +67,52 @@ Trimly is designed around **four core pillars**:
 
 ---
 
+## Screenshots & UI Preview
+
+| 01. Analytics KPI & Engagement Time-Series | 02. Real-Time Live Activity Stream (SSE) |
+| :---: | :---: |
+| <img src="public/images/01-analytics-kpi-timeseries.png" alt="01 - Analytics KPI and Timeseries" width="100%" /> | <img src="public/images/02-analytics-live-telemetry-sse.png" alt="02 - Real-Time Live Activity Stream" width="100%" /> |
+| **01. Analytics KPI & Engagement Time-Series**<br>Interactive analytics overview displaying top-level metrics (Total Engagements, Unique Audience, QR Scans vs. Web traffic ratio, and Top Performing Driver) paired with a responsive Recharts engagement time-series area chart supporting custom filtering windows (Today, 7D, 30D, 90D, Custom Range). | **02. Real-Time Live Activity Stream (SSE Telemetry)**<br>Real-time Server-Sent Events (SSE) telemetry feed showing live incoming web clicks and QR scans with instantaneous client updates, device environment identification (OS, Desktop/Mobile), referring URLs, geographic locations, and sliding window telemetry buffers. |
+
+| 03. Inbound Traffic Sources & Device Distribution | 04. Geographic Intelligence & UTM Attribution |
+| :---: | :---: |
+| <img src="public/images/03-analytics-sources-device-distribution.png" alt="03 - Inbound Traffic Sources and Device Distribution" width="100%" /> | <img src="public/images/04-analytics-geo-cities-utm-tracking.png" alt="04 - Geographic Intelligence and UTM Tracking" width="100%" /> |
+| **03. Inbound Traffic Sources & Device Distribution**<br>Deep analytics breakdown showcasing top inbound referral channels (Google, LinkedIn, Twitter, GitHub, Direct) alongside device hardware distribution donuts (Desktop, Mobile, Tablet) and OS software breakdown (macOS, iOS, Windows). | **04. Geographic Intelligence & UTM Attribution**<br>Granular geographic intelligence highlighting visitor traffic by metropolitan city (San Francisco, Bengaluru, Mumbai, Paris, London) alongside web browser market share (Chrome, Safari, Firefox, Edge) and multi-touch UTM parameter campaign tracking. |
+
+| 05. Branded QR Code Customizer Studio | 06. QR Code Deep Dive & Dynamic Routing |
+| :---: | :---: |
+| <img src="public/images/05-qr-code-studio-customizer.png" alt="05 - Branded QR Code Customizer Studio" width="100%" /> | <img src="public/images/06-qr-code-details-dynamic-routing.png" alt="06 - QR Code Details and Dynamic Routing" width="100%" /> |
+| **05. Branded QR Code Customizer Studio**<br>Interactive 2-step customization studio featuring custom dot matrix patterns, corner eye styling, curated color palettes, custom hex pickers, and real-time scannability contrast verification to prevent unreadable QR codes. | **06. QR Code Details & Dynamic Routing**<br>In-depth single QR overview screen displaying target destination, short link alias, server-authoritative vector SVG preview, multi-format exports (SVG, PNG, JPEG), and rule-based dynamic routing configurations by device or location. |
+
+| 07. QR Code Gallery & Batch Management | 08. Multi-Channel Marketing Campaigns Matrix |
+| :---: | :---: |
+| <img src="public/images/07-qr-code-gallery-management.png" alt="07 - QR Code Gallery and Batch Management" width="100%" /> | <img src="public/images/08-campaigns-overview-matrix.png" alt="08 - Multi-Channel Marketing Campaigns Matrix" width="100%" /> |
+| **07. QR Code Gallery & Batch Management**<br>Unified gallery view of all user-generated QR codes featuring server-rendered SVG previews, total scan counts, creation dates, destination target URLs, tag organization, and quick download/edit action menus. | **08. Multi-Channel Marketing Campaigns Matrix**<br>Omnichannel marketing campaign hub organizing short links into structured campaigns (Email, Social, SMS, Paid, Influencer, Community) with aggregated link counts, total clicks, and automated top-performing channel badges. |
+
+| 09. Campaign Attribution & Channel Breakdown | 10. Home Dashboard & Quick Create Workflow |
+| :---: | :---: |
+| <img src="public/images/09-campaign-deepdive-attribution.png" alt="09 - Campaign Attribution and Channel Breakdown" width="100%" /> | <img src="public/images/10-home-dashboard-quick-create.png" alt="10 - Home Dashboard and Quick Create" width="100%" /> |
+| **09. Campaign Attribution & Channel Breakdown Deep Dive**<br>Detailed campaign attribution view breaking down total campaign links, overall click volume, active channel touchpoints, top-performing channels (e.g., YouTube), and channel-specific click share attribution progress bars. | **10. Home Dashboard & Quick Create Workflow**<br>Streamlined workspace home view featuring the quick URL shortening bar with optional QR code attachment, monthly allowance quota tracker, quick link/click summary metrics, and an interactive onboarding progress checklist. |
+
+---
+
 ## Key Features
 
-### 🔗 Link Management Dashboard
+### Link Management Dashboard
 - **Quick Create Bar**: Instant URL shortening from any dashboard view with clipboard auto-copy.
 - **Custom Back-Half Aliases & Clones**: Seamlessly edit or duplicate existing links to new custom slugs with preserved metadata.
 - **Multi-Factor Filtering & Search**: Instant filtering by tags, custom vs auto aliases, expiration status, attached QR presence, date ranges, and full-text keyword search.
 - **Bulk Operations Toolbar**: Batch-select multiple links to add tags, remove tags, or bulk-hide/unhide in a single click.
 - **Password-Protected Link Access**: Dedicated `/protected/[code]` unlocking gateway that verifies encrypted links and automatically routes to destination URLs.
 
-### 🎨 Custom QR Code Studio
+### Custom QR Code Studio
 - **2-Step Creation Flow**: Step 1 captures destination URL & title; Step 2 unlocks rich design customization (dot matrix styles, corner eyes, custom hex colors, center brand logos).
 - **Live Scannability & Contrast Warning**: Real-time WCAG contrast computation alerting users if foreground/background colors are unscannable before saving.
 - **Server-Authoritative Vector SVG Rendering**: Display exact backend-generated SVG markup across cards, preview modals, and detail pages to prevent client/server drift.
 - **Multi-Format Export Engine**: One-click downloads for vector **SVG**, high-resolution **PNG** (1000x1000px), or white-padded **JPEG**.
 - **Promote Standalone QRs to Links**: One-click action to promote standalone QR codes into visible dashboard links without recreating target URLs.
 
-### 📁 Marketing Campaigns & Multi-Channel Attribution
+### Marketing Campaigns & Multi-Channel Attribution
 - **Dedicated Campaign Creation Studio (`/campaigns/create`)**: Immersive 2-column builder layout featuring real-time input synchronization and auto-collapsing sidebar for maximum workspace canvas.
 - **Interactive Live Laptop Mockup**: Live desktop preview reacting instantly to campaign titles, channel selections, and destination URLs with dynamic channel brand dots and in-mockup scrolling.
 - **Smart "All Channels" Batch Generation**: Auto-generates multi-channel short links with automatic UTM parameters (`utm_source={channel}&utm_medium=campaign&utm_campaign={name}`) in one click.
@@ -77,12 +120,12 @@ Trimly is designed around **four core pillars**:
 - **Dynamic Channel Theming & Badges**: Channel cards dynamically theme according to channel types (Social &rarr; Indigo, Email &rarr; Sky Blue, SMS &rarr; Emerald, Paid &rarr; Amber, YouTube &rarr; Red, LinkedIn &rarr; Blue) with dynamic top-performer badges and gold trophy highlights.
 - **Safe Unlinking Architecture**: Campaign deletion safely unlinks associated short links without deleting them, keeping live links active in the wild.
 
-### 📈 Visual Analytics & Insights
+### Visual Analytics & Insights
 - **Interactive Time-Series Charts**: Smooth area/line charts built with Recharts displaying daily engagement over 7d/30d/90d windows.
 - **Metric Breakdown Cards**: Visual distribution bars for top referring domains, device categories (Desktop/Mobile/Tablet), and countries.
 - **Top Performer Badges**: Instant callouts for peak traffic day and top geographic source.
 
-### ⚙️ Account Management & Settings
+### Account Management & Settings
 - **User Profile Customization**: Update display name, avatar URL, theme preferences (light/dark/system), and timezones.
 - **Asynchronous Data Export**: Trigger BullMQ data export and poll status with instant JSON download upon completion.
 - **Asynchronous Account Deletion**: Password-confirmed background account and data cascade purge.
@@ -158,8 +201,9 @@ flowchart TD
         AxiosClient["Axios Client (with JWT Bearer Interceptors)"]
     end
 
-    subgraph Backend_Layer ["Trimly Backend API"]
-        NestServer["NestJS REST API (/api/...)"]
+    subgraph Backend_Layer ["Trimly Backend APIs (Interchangeable)"]
+        NestServer["NestJS REST API Gateway (/api/...)"]
+        SpringBootServer["Spring Boot 4.1.1 Java API Gateway (/api/...)"]
     end
 
     Dashboard --> Components
@@ -167,23 +211,8 @@ flowchart TD
     Components --> TanStackQuery
     TanStackQuery --> AxiosClient
     AxiosClient --> NestServer
+    AxiosClient -.-> SpringBootServer
 ```
-
----
-
-## Screenshots & UI Preview
-
-| Dashboard Home | Links Management |
-| :---: | :---: |
-| <!-- TODO: add screenshot: Dashboard Home View --> *(Home metrics, quick create bar, and onboarding stepper)* | <!-- TODO: add screenshot: Links Management View --> *(Links list with tag filters, copy button, and bulk action bar)* |
-
-| QR Code Studio | Marketing Campaigns |
-| :---: | :---: |
-| <!-- TODO: add screenshot: QR Code Customizer --> *(Live QR pattern customizer with real-time contrast validation)* | <!-- TODO: add screenshot: Campaigns Studio --> *(Campaign creation studio with channel-level attribution)* |
-
-| Analytics & Insights | Account Settings |
-| :---: | :---: |
-| <!-- TODO: add screenshot: Analytics Overview --> *(Recharts engagement trends, referrers, devices, & country maps)* | <!-- TODO: add screenshot: Account Settings --> *(User preferences, data export polling, & account security)* |
 
 ---
 
