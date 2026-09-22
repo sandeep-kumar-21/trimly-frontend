@@ -2,32 +2,37 @@
 
 > A modern, responsive web application for link management, custom QR code generation, marketing campaign tracking, and real-time click analytics — built with Next.js 16 (App Router), React 19, TanStack Query, Zustand, and Tailwind CSS.
 
-[![Next.js](https://img.shields.io/badge/Next.js%2016-000000?style=flat&logo=next.js&logoColor=white)](https://nextjs.org/)
-[![React](https://img.shields.io/badge/React%2019-61DAFB?style=flat&logo=react&logoColor=black)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS%204-06B6D4?style=flat&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![TanStack Query](https://img.shields.io/badge/TanStack%20Query%205-FF4154?style=flat&logo=react-query&logoColor=white)](https://tanstack.com/query)
-[![Zustand](https://img.shields.io/badge/Zustand-443E38?style=flat&logo=npm&logoColor=white)](https://zustand-demo.pmnd.rs/)
-[![Recharts](https://img.shields.io/badge/Recharts-22b5bf?style=flat&logo=d3.js&logoColor=white)](https://recharts.org/)
-[![Jest](https://img.shields.io/badge/Jest-C21325?style=flat&logo=jest&logoColor=white)](https://jestjs.io/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Next.js](https://img.shields.io/badge/Next.js%2016-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React%2019-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS_4-06B6D4?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![TanStack Query](https://img.shields.io/badge/TanStack_Query_5-FF4154?style=for-the-badge&logo=react-query&logoColor=white)](https://tanstack.com/query)
+[![Zustand](https://img.shields.io/badge/Zustand-443E38?style=for-the-badge&logo=npm&logoColor=white)](https://zustand-demo.pmnd.rs/)
+[![Recharts](https://img.shields.io/badge/Recharts-22b5bf?style=for-the-badge&logo=d3.js&logoColor=white)](https://recharts.org/)
+[![Jest](https://img.shields.io/badge/Jest-C21325?style=for-the-badge&logo=jest&logoColor=white)](https://jestjs.io/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-F7DF1E?style=for-the-badge&logo=opensourceinitiative&logoColor=black)](https://opensource.org/licenses/MIT)
 
+<br/>
+
+<a href="https://www.linkedin.com/in/sandeep-kumar-s21"><img src="https://img.shields.io/badge/LinkedIn-Connect%20on%20LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn" /></a>
+<a href="mailto:sandeepkumarnitrr@gmail.com"><img src="https://img.shields.io/badge/Email-sandeepkumarnitrr%40gmail.com-EA4335?style=for-the-badge&logo=gmail&logoColor=white" alt="Email" /></a>
+<a href="https://github.com/sandeep-kumar-21"><img src="https://img.shields.io/badge/GitHub-View%20Profile-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub" /></a>
 
 **Backend Repositories**:
 - **NestJS Backend**: [Trimly Backend (NestJS / MongoDB / Redis / BullMQ)](https://github.com/sandeep-kumar-21/trimly-backend)  
-  [![NestJS](https://img.shields.io/badge/NestJS-11-E0234E?style=flat&logo=nestjs&logoColor=white)](https://github.com/sandeep-kumar-21/trimly-backend)
-  [![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose-47A248?style=flat&logo=mongodb&logoColor=white)](https://github.com/sandeep-kumar-21/trimly-backend)
-  [![Redis](https://img.shields.io/badge/Redis-5-DC382D?style=flat&logo=redis&logoColor=white)](https://github.com/sandeep-kumar-21/trimly-backend)
-  [![BullMQ](https://img.shields.io/badge/BullMQ-Queue-CC3534?style=flat&logo=npm&logoColor=white)](https://github.com/sandeep-kumar-21/trimly-backend)
+  [![NestJS](https://img.shields.io/badge/NestJS-11-E0234E?style=for-the-badge&logo=nestjs&logoColor=white)](https://github.com/sandeep-kumar-21/trimly-backend)
+  [![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://github.com/sandeep-kumar-21/trimly-backend)
+  [![Redis](https://img.shields.io/badge/Redis-5-DC382D?style=for-the-badge&logo=redis&logoColor=white)](https://github.com/sandeep-kumar-21/trimly-backend)
+  [![BullMQ](https://img.shields.io/badge/BullMQ-Queue-CC3534?style=for-the-badge&logo=npm&logoColor=white)](https://github.com/sandeep-kumar-21/trimly-backend)
 
 - **Spring Boot Java Backend**: [Trimly Backend Java v2 (Spring Boot 4.1.1 / Java 25 LTS / PostgreSQL 16 / Redis 7 / Spring Security 7 / Docker / JUnit 5)](https://github.com/sandeep-kumar-21/trimly-backend-java-v2)  
-  [![Spring Boot](https://img.shields.io/badge/Spring_Boot-4.1.1-6DB33F?style=flat&logo=springboot&logoColor=white)](https://github.com/sandeep-kumar-21/trimly-backend-java-v2)
-  [![Java](https://img.shields.io/badge/Java-25_LTS-ED8B00?style=flat&logo=openjdk&logoColor=white)](https://github.com/sandeep-kumar-21/trimly-backend-java-v2)
-  [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=flat&logo=postgresql&logoColor=white)](https://github.com/sandeep-kumar-21/trimly-backend-java-v2)
-  [![Redis](https://img.shields.io/badge/Redis-7-DC382D?style=flat&logo=redis&logoColor=white)](https://github.com/sandeep-kumar-21/trimly-backend-java-v2)
-  [![Spring Security](https://img.shields.io/badge/Spring_Security-7-6DB33F?style=flat&logo=springsecurity&logoColor=white)](https://github.com/sandeep-kumar-21/trimly-backend-java-v2)
-  [![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?style=flat&logo=docker&logoColor=white)](https://github.com/sandeep-kumar-21/trimly-backend-java-v2)
-  [![JUnit](https://img.shields.io/badge/JUnit-5-25A162?style=flat&logo=junit5&logoColor=white)](https://github.com/sandeep-kumar-21/trimly-backend-java-v2)
+  [![Spring Boot](https://img.shields.io/badge/Spring_Boot-4.1.1-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)](https://github.com/sandeep-kumar-21/trimly-backend-java-v2)
+  [![Java](https://img.shields.io/badge/Java-25_LTS-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)](https://github.com/sandeep-kumar-21/trimly-backend-java-v2)
+  [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)](https://github.com/sandeep-kumar-21/trimly-backend-java-v2)
+  [![Redis](https://img.shields.io/badge/Redis-7-DC382D?style=for-the-badge&logo=redis&logoColor=white)](https://github.com/sandeep-kumar-21/trimly-backend-java-v2)
+  [![Spring Security](https://img.shields.io/badge/Spring_Security-7-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white)](https://github.com/sandeep-kumar-21/trimly-backend-java-v2)
+  [![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://github.com/sandeep-kumar-21/trimly-backend-java-v2)
+  [![JUnit](https://img.shields.io/badge/JUnit-5-25A162?style=for-the-badge&logo=junit5&logoColor=white)](https://github.com/sandeep-kumar-21/trimly-backend-java-v2)
 
 ---
 
